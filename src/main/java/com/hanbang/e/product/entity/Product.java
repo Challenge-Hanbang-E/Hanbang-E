@@ -28,7 +28,7 @@ public class Product {
 	private String img;
 
 	@Column(nullable = false)
-	private int amount;
+	private int stock;
 
 	@Column(nullable = false)
 	private int sales;
