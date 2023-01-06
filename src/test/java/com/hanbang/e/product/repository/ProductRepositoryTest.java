@@ -1,6 +1,6 @@
 package com.hanbang.e.product.repository;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import org.springframework.test.context.jdbc.Sql;
 import com.hanbang.e.product.entity.Brand;
 import com.hanbang.e.product.entity.Product;
 
-@Sql("classpath:db/tableInit.sql")
+@Sql("classpath:db/productDomainTableInit.sql")
 @DataJpaTest
 class ProductRepositoryTest {
 
