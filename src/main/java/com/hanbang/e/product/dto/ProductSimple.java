@@ -6,7 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ProductDetails {
+public class ProductSimple {
+
 	private Long productId;
 
 	private String brand;
@@ -17,35 +18,22 @@ public class ProductDetails {
 
 	private String productimg;
 
-	private int stock;
-
-	private int sales;
-
-	private Boolean onSale;
-
 	@Builder
-	public ProductDetails(Long productId, String brand, String name, Long price, String productimg, int stock,
-		int sales,
-		Boolean onSale) {
+	public ProductSimple(Long productId, String brand, String name, Long price, String productimg) {
 		this.productId = productId;
 		this.brand = brand;
 		this.name = name;
 		this.price = price;
 		this.productimg = productimg;
-		this.stock = stock;
-		this.sales = sales;
-		this.onSale = onSale;
 	}
 
-	public static ProductDetails from(Product product) {
-		return ProductDetails.builder()
+	public static ProductSimple from(Product product) {
+		return ProductSimple.builder()
 			.productId(product.getProductId())
 			.brand(product.getBrand().getBrandName())
 			.name(product.getProductName())
 			.price(product.getPrice())
 			.productimg(product.getImg())
-			.stock(product.getStock())
-			.onSale(product.getOnSale())
 			.build();
 	}
 }

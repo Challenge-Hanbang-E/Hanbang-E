@@ -7,9 +7,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Brand {
 
 	@Id
@@ -18,4 +20,8 @@ public class Brand {
 
 	@Column(nullable = false)
 	private String brandName;
+
+	public Brand(String brandName) {
+		this.brandName = brandName;
+	}
 }

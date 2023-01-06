@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.hanbang.e.product.entity.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
-	List<Product> findByProductNameContainingOrderByPriceDesc(String search, Pageable pageable);
+	List<Product> findByProductNameContainingOrderByPriceDesc(String productName, Pageable pageable);
 
-	List<Product> findByProductNameContainingOrderByPriceAsc(String search, Pageable pageable);
+	List<Product> findByProductNameContainingOrderByPriceAsc(String productName, Pageable pageable);
 
-	List<Product> findByProductNameContainingOrderBySalesDesc(String search, Pageable pageable);
+	List<Product> findByProductNameContainingOrderBySalesDesc(String productName, Pageable pageable);
 }
