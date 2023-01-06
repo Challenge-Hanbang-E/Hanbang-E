@@ -6,34 +6,30 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ProductSimple {
+public class ProductSimpleResp {
 
 	private Long productId;
-
 	private String brand;
-
 	private String name;
-
 	private Long price;
-
-	private String productimg;
+	private String img;
 
 	@Builder
-	public ProductSimple(Long productId, String brand, String name, Long price, String productimg) {
+	public ProductSimpleResp(Long productId, String brand, String name, Long price, String img) {
 		this.productId = productId;
 		this.brand = brand;
 		this.name = name;
 		this.price = price;
-		this.productimg = productimg;
+		this.img = img;
 	}
 
-	public static ProductSimple from(Product product) {
-		return ProductSimple.builder()
+	public static ProductSimpleResp from(Product product) {
+		return ProductSimpleResp.builder()
 			.productId(product.getProductId())
 			.brand(product.getBrand().getBrandName())
 			.name(product.getProductName())
 			.price(product.getPrice())
-			.productimg(product.getImg())
+			.img(product.getImg())
 			.build();
 	}
 }

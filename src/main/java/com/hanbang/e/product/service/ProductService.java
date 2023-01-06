@@ -7,10 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hanbang.e.common.dto.ResponseDto;
-import com.hanbang.e.product.dto.ProductDetails;
-import com.hanbang.e.product.dto.ProductList;
-import com.hanbang.e.product.dto.ProductSimple;
+import com.hanbang.e.product.dto.ProductDetailResp;
+import com.hanbang.e.product.dto.ProductListResp;
+import com.hanbang.e.product.dto.ProductSimpleResp;
 import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.repository.ProductRepository;
 
@@ -23,7 +22,7 @@ public class ProductService {
 	private final ProductRepository productRepository;
 
 	@Transactional(readOnly = true)
-	public ProductList searchProduct(String search, String orderby, Pageable pageable) {
+	public ProductListResp searchProduct(String search, String orderby, Pageable pageable) {
 
 		List<Product> searchedProductList;
 		if (orderby.equals("pricedesc")) { // 높은 가격순 조회
@@ -34,21 +33,21 @@ public class ProductService {
 			searchedProductList = productRepository.findByProductNameContainingOrderBySalesDesc(search, pageable);
 		}
 
-		List<ProductSimple> result = new ArrayList<>();
+		List<ProductSimpleResp> result = new ArrayList<>();
 		for (Product product : searchedProductList) {
-			result.add(ProductSimple.from(product));
+			result.add(ProductSimpleResp.from(product));
 		}
 
-		return new ProductList(result);
+		return new ProductListResp(result);
 	}
 
 	@Transactional(readOnly = true)
-	public ProductDetails getProductDetails(Long productId) {
+	public ProductDetailResp getProductDetails(Long productId) {
 
 		Product selectedProduct = productRepository.findById(productId).orElseThrow(
 			() -> new IllegalArgumentException("해당 상품은 존재하지 않습니다.")
 		);
 
-		return ProductDetails.from(selectedProduct);
+		return ProductDetailResp.from(selectedProduct);
 	}
 }

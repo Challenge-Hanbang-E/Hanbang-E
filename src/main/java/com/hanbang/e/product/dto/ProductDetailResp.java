@@ -6,25 +6,18 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ProductDetails {
+public class ProductDetailResp {
 	private Long productId;
-
 	private String brand;
-
 	private String name;
-
 	private Long price;
-
 	private String productimg;
-
 	private int stock;
-
 	private int sales;
-
 	private Boolean onSale;
 
 	@Builder
-	public ProductDetails(Long productId, String brand, String name, Long price, String productimg, int stock,
+	public ProductDetailResp(Long productId, String brand, String name, Long price, String productimg, int stock,
 		int sales,
 		Boolean onSale) {
 		this.productId = productId;
@@ -37,8 +30,8 @@ public class ProductDetails {
 		this.onSale = onSale;
 	}
 
-	public static ProductDetails from(Product product) {
-		return ProductDetails.builder()
+	public static ProductDetailResp from(Product product) {
+		return ProductDetailResp.builder()
 			.productId(product.getProductId())
 			.brand(product.getBrand().getBrandName())
 			.name(product.getProductName())

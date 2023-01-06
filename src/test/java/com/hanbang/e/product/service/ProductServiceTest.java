@@ -1,15 +1,12 @@
 package com.hanbang.e.product.service;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,11 +15,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.jdbc.Sql;
 
-import com.hanbang.e.common.dto.ResponseDto;
-import com.hanbang.e.product.dto.ProductDetails;
-import com.hanbang.e.product.dto.ProductList;
+import com.hanbang.e.product.dto.ProductDetailResp;
+import com.hanbang.e.product.dto.ProductListResp;
 import com.hanbang.e.product.entity.Brand;
 import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.repository.ProductRepository;
@@ -77,7 +72,7 @@ class ProductServiceTest {
 		when(productRepository.findByProductNameContainingOrderByPriceDesc(search, pageable)).thenReturn(productList);
 
 		/* when - 테스트 실행 */
-		ProductList response = productService.searchProduct(search, orderby, pageable);
+		ProductListResp response = productService.searchProduct(search, orderby, pageable);
 
 		/* then - 검증 */
 		assertThat(response.getItems().get(0).getName()).isEqualTo("아이폰13");
@@ -127,7 +122,7 @@ class ProductServiceTest {
 		when(productRepository.findByProductNameContainingOrderByPriceAsc(search, pageable)).thenReturn(productList);
 
 		/* when - 테스트 실행 */
-		ProductList result = productService.searchProduct(search, orderby, pageable);
+		ProductListResp result = productService.searchProduct(search, orderby, pageable);
 
 		/* then - 검증 */
 		assertThat(result.getItems().get(0).getName()).isEqualTo("아이폰11");
@@ -176,7 +171,7 @@ class ProductServiceTest {
 		when(productRepository.findByProductNameContainingOrderBySalesDesc(search, pageable)).thenReturn(productList);
 
 		/* when - 테스트 실행 */
-		ProductList result = productService.searchProduct(search, orderby, pageable);
+		ProductListResp result = productService.searchProduct(search, orderby, pageable);
 
 		/* then - 검증 */
 		assertThat(result.getItems().get(0).getName()).isEqualTo("아이폰12");
@@ -204,7 +199,7 @@ class ProductServiceTest {
 		when(productRepository.findById(id)).thenReturn(productOP);
 
 		/* when - 테스트 실행 */
-		ProductDetails result = productService.getProductDetails(id);
+		ProductDetailResp result = productService.getProductDetails(id);
 
 		/* then - 검증 */
 		assertThat(result.getName()).isEqualTo("아이폰11");
