@@ -66,14 +66,4 @@ public class Orders {
 		this.product = product;
 	}
 
-	public static Orders of(Member member, Product product, int quantity) {
-		return Orders.builder()
-			.destination(member.getAddress())
-			.quantity(quantity)
-			.productPrice(product.getPrice())
-			.totalPrice(product.getPrice() * quantity)
-			.member(member)
-			.product(product)
-			.build();
-	}
 }

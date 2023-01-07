@@ -41,7 +41,7 @@ public class OrderService {
 
 		product.sell(orderQuantity);
 
-		Orders order = Orders.of(member, product, orderQuantity);
+		Orders order = orderReq.toEntity(member, product, orderQuantity);
 		orderRepository.save(order);
 
 		return new ResponseDto<>("success", "주문 성공", null);
