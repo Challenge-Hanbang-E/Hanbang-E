@@ -1,7 +1,7 @@
 package com.hanbang.e.member.service;
 
-import com.hanbang.e.member.dto.RequestCreateMember;
-import com.hanbang.e.member.dto.ResponseMember;
+import com.hanbang.e.member.dto.MemberCreateReq;
+import com.hanbang.e.member.dto.MemberResp;
 import com.hanbang.e.member.repository.MemberRepository;
 
 import org.junit.jupiter.api.Test;
@@ -27,17 +27,17 @@ public class MemberServiceTest {
     @Test
     public void signupTest() {
         /* given - 데이터 준비 */
-        RequestCreateMember requestCreateMember = new RequestCreateMember(
+        MemberCreateReq memberCreateReq = new MemberCreateReq(
                 "hanghae1@naver.com","Hanghae1!@","부산시 동래구");
-        memberService.signup(requestCreateMember);
+        memberService.signup(memberCreateReq);
 
         /* 가짜객체의 행동 정의 */
-        when(memberRepository.save(any())).thenReturn(requestCreateMember.toEntity());
+        when(memberRepository.save(any())).thenReturn(memberCreateReq.toEntity());
 
         /* when - 테스트 실행 */
-        ResponseMember responseMember = memberService.signup(requestCreateMember);
+        MemberResp memberResp = memberService.signup(memberCreateReq);
 
         /* then - 검증 */
-        assertThat(responseMember.getEmail()).isEqualTo(requestCreateMember.getEmail());
+        assertThat(memberResp.getEmail()).isEqualTo(memberCreateReq.getEmail());
     }
 }

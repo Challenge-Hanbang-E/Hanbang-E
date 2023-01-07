@@ -3,7 +3,7 @@ package com.hanbang.e.member.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.hanbang.e.member.dto.RequestCreateMember;
+import com.hanbang.e.member.dto.MemberCreateReq;
 import com.hanbang.e.member.entity.Member;
 import com.hanbang.e.member.repository.MemberRepository;
 
@@ -69,10 +69,10 @@ public class MemberControllerTest {
     @Test
     public void signupTest() throws JsonProcessingException {
         /* given - 데이터 준비 */
-        RequestCreateMember requestCreateMember = new RequestCreateMember(
+        MemberCreateReq memberCreateReq = new MemberCreateReq(
                 "hanghae4@naver.com","Hanghae11!@","부산시");
 
-        String body = om.writeValueAsString(requestCreateMember);
+        String body = om.writeValueAsString(memberCreateReq);
 
         /* when - 테스트 실행 */
         HttpEntity<String> request = new HttpEntity<>(body, headers);
