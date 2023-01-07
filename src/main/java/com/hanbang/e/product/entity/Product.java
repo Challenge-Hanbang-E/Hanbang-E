@@ -53,4 +53,8 @@ public class Product {
 		this.onSale = onSale;
 		this.brand = brand;
 	}
+
+	public void updateSales(int quantity){
+		this.sales += quantity;
+	}
 }

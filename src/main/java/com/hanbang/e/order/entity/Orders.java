@@ -18,6 +18,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.hanbang.e.member.entity.Member;
 import com.hanbang.e.product.entity.Product;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -54,4 +55,25 @@ public class Orders {
 	@JoinColumn(name = "PRODUCT_ID")
 	private Product product;
 
+	@Builder
+	public Orders(String destination, int quantity, Long productPrice, Long totalPrice, Member member,
+		Product product) {
+		this.destination = destination;
+		this.quantity = quantity;
+		this.productPrice = productPrice;
+		this.totalPrice = totalPrice;
+		this.member = member;
+		this.product = product;
+	}
+
+	public static Orders of(Member member, Product product, int quantity) {
+		return Orders.builder()
+			.destination(member.getAddress())
+			.quantity(quantity)
+			.productPrice(product.getPrice())
+			.totalPrice(product.getPrice() * quantity)
+			.member(member)
+			.product(product)
+			.build();
+	}
 }
