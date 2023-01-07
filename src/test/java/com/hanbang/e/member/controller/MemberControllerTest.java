@@ -50,19 +50,14 @@ public class MemberControllerTest {
     @BeforeEach
     public void setup() {
 
-        Member member1 = Member.builder()
-                .email("hanghae1@naver.com")
-                .password("Hanghae11!@")
-                .address("부산시")
-                .build();
+        Member member1 = new Member("hanghae1@naver.com","Hanghae1!@","부산시 동래구");
         memberRepository.save(member1);
 
-        Member member2 = Member.builder()
-                .email("hanghae2@naver.com")
-                .password("Hanghae12!@#")
-                .address("부산시")
-                .build();
+        Member member2 = new Member("hanghae2@naver.com","Hanghae2!@","부산시 부산진구");
         memberRepository.save(member2);
+
+        Member member3 = new Member("hanghae3@naver.com","Hanghae3!@","부산시 북구");
+        memberRepository.save(member3);
     }
 
     @AfterEach
@@ -72,13 +67,10 @@ public class MemberControllerTest {
 
     @DisplayName("회원가입")
     @Test
-    public void signup() throws JsonProcessingException {
+    public void signupTest() throws JsonProcessingException {
         /* given - 데이터 준비 */
-        RequestCreateMember requestCreateMember = RequestCreateMember.builder()
-                .email("hanghae12@naver.com")
-                .password("Hanghae123!@")
-                .address("부산시")
-                .build();
+        RequestCreateMember requestCreateMember = new RequestCreateMember(
+                "hanghae4@naver.com","Hanghae11!@","부산시");
 
         String body = om.writeValueAsString(requestCreateMember);
 

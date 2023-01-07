@@ -20,18 +20,10 @@ public class MemberRepositoryTest {
     @BeforeEach
     public void setup() {
 
-        Member member1 = Member.builder()
-                .email("hanghae1@naver.com")
-                .password("Hanghae11!@")
-                .address("부산시")
-                .build();
+        Member member1 = new Member("hanghae1@naver.com","Hanghae1!@","부산시 동래구");
         memberRepository.save(member1);
 
-        Member member2 = Member.builder()
-                .email("hanghae2@naver.com")
-                .password("Hanghae12!@#")
-                .address("부산시")
-                .build();
+        Member member2 = new Member("hanghae2@naver.com","Hanghae2!@","부산시 부산진구");
         memberRepository.save(member2);
     }
 
@@ -43,14 +35,7 @@ public class MemberRepositoryTest {
     @Test
     public void createMemberTest() {
         /* given - 데이터 준비 */
-        String email = "hanghae12@naver.com";
-        String password = "Hanghae123!@";
-        String address = "부산시";
-        Member member = Member.builder()
-                .email(email)
-                .password(password)
-                .address(address)
-                .build();
+        Member member = new Member("hanghae1@naver.com","Hanghae1!@","부산시 동래구");
 
         /* when - 테스트 실행 */
         Member member1 = memberRepository.save(member);

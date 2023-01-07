@@ -27,12 +27,8 @@ public class MemberServiceTest {
     @Test
     public void signupTest() {
         /* given - 데이터 준비 */
-        RequestCreateMember requestCreateMember = RequestCreateMember.builder()
-                .email("hanghae12@naver.com")
-                .password("Hanghae123!@")
-                .address("부산시")
-                .build();
-
+        RequestCreateMember requestCreateMember = new RequestCreateMember(
+                "hanghae1@naver.com","Hanghae1!@","부산시 동래구");
         memberService.signup(requestCreateMember);
 
         /* 가짜객체의 행동 정의 */
