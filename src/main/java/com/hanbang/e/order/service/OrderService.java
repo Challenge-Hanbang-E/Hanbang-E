@@ -39,7 +39,7 @@ public class OrderService {
 
 		int orderQuantity = orderReq.getQuantity();
 
-		product.updateSales(orderQuantity);
+		product.sell(orderQuantity);
 
 		Orders order = Orders.of(member, product, orderQuantity);
 		orderRepository.save(order);

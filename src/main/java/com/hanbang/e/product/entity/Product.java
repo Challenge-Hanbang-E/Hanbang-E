@@ -54,7 +54,8 @@ public class Product {
 		this.brand = brand;
 	}
 
-	public void updateSales(int quantity){
+	public void sell(int quantity) {
+		this.stock -= quantity;
 		this.sales += quantity;
 	}
 }
