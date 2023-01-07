@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,18 +12,25 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import com.hanbang.e.member.entity.Member;
 import com.hanbang.e.product.entity.Product;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Orders {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long orderId;
 
+	@CreatedDate
 	@Column(nullable = false)
 	private LocalDateTime createdAt;
 
@@ -30,7 +38,7 @@ public class Orders {
 	private String destination;
 
 	@Column(nullable = false)
-	private int amount;
+	private int quantity;
 
 	@Column(nullable = false)
 	private Long productPrice;
