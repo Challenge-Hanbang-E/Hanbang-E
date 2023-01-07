@@ -21,7 +21,7 @@ public class OrderService {
 	private final MemberRepository memberRepository;
 	private final ProductRepository productRepository;
 
-	public ResponseDto insertOrder(Long memberId, Long productId, OrderReq orderReq) {
+	public ResponseDto<?> insertOrder(Long memberId, Long productId, OrderReq orderReq) {
 
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
@@ -44,7 +44,7 @@ public class OrderService {
 		Orders order = Orders.of(member, product, orderQuantity);
 		orderRepository.save(order);
 
-		return new ResponseDto("success", "주문 성공", null);
+		return new ResponseDto<>("success", "주문 성공", null);
 	}
 
 }

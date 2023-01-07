@@ -24,9 +24,9 @@ public class OrderController {
 	private final OrderService orderService;
 
 	@PostMapping("")
-	public ResponseEntity<ResponseDto> doOrder(@RequestParam Long productId, @RequestBody OrderReq orderReq) {
+	public ResponseEntity<ResponseDto<?>> doOrder(@RequestParam Long productId, @RequestBody OrderReq orderReq) {
 		Long memberId = 1L; // 임시용
-		ResponseDto response = orderService.insertOrder(memberId, productId, orderReq);
+		ResponseDto<?> response = orderService.insertOrder(memberId, productId, orderReq);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
