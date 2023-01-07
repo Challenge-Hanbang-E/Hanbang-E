@@ -1,7 +1,7 @@
 package com.hanbang.e.member.service;
 
-import com.hanbang.e.member.dto.RequestCreateMember;
-import com.hanbang.e.member.dto.ResponseMember;
+import com.hanbang.e.member.dto.MemberCreateReq;
+import com.hanbang.e.member.dto.MemberResp;
 import com.hanbang.e.member.entity.Member;
 import com.hanbang.e.member.repository.MemberRepository;
 
@@ -17,15 +17,15 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public ResponseMember signup(RequestCreateMember requestCreateMember) {
-        validateDuplicateMember(requestCreateMember);
-        Member member = new Member(requestCreateMember.getEmail(), requestCreateMember.getPassword(), requestCreateMember.getAddress());
+    public MemberResp signup(MemberCreateReq memberCreateReq) {
+        validateDuplicateMember(memberCreateReq);
+        Member member = Member.of(memberCreateReq.getEmail(), memberCreateReq.getPassword(), memberCreateReq.getAddress());
         memberRepository.save(member);
-        return new ResponseMember(member.getEmail(), member.getAddress());
+        return MemberResp.of(member.getEmail(), member.getAddress());
     }
 
-    private void validateDuplicateMember(RequestCreateMember requestCreateMember) {
-        memberRepository.findByEmail(requestCreateMember.getEmail())
+    private void validateDuplicateMember(MemberCreateReq memberCreateReq) {
+        memberRepository.findByEmail(memberCreateReq.getEmail())
                 .ifPresent(m -> {
                     throw new IllegalArgumentException("중복된 이메일이 존재합니다.");
                 });
