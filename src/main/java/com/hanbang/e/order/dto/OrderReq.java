@@ -25,7 +25,6 @@ public class OrderReq {
 			.destination(member.getAddress())
 			.quantity(quantity)
 			.productPrice(product.getPrice())
-			.totalPrice(product.getPrice() * quantity)
 			.member(member)
 			.product(product)
 			.build();

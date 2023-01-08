@@ -56,12 +56,12 @@ public class Orders {
 	private Product product;
 
 	@Builder
-	public Orders(String destination, int quantity, Long productPrice, Long totalPrice, Member member,
+	public Orders(String destination, int quantity, Long productPrice, Member member,
 		Product product) {
 		this.destination = destination;
 		this.quantity = quantity;
 		this.productPrice = productPrice;
-		this.totalPrice = totalPrice;
+		this.totalPrice = productPrice * quantity;
 		this.member = member;
 		this.product = product;
 	}
