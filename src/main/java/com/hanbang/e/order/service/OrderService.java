@@ -1,5 +1,8 @@
 package com.hanbang.e.order.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -9,6 +12,7 @@ import com.hanbang.e.common.dto.ResponseDto;
 import com.hanbang.e.member.entity.Member;
 import com.hanbang.e.member.repository.MemberRepository;
 import com.hanbang.e.order.dto.OrderReq;
+import com.hanbang.e.order.dto.OrderResp;
 import com.hanbang.e.order.entity.Orders;
 import com.hanbang.e.order.repository.OrderRepository;
 import com.hanbang.e.product.entity.Product;
@@ -51,6 +55,26 @@ public class OrderService {
 		orderRepository.save(order);
 
 		return new ResponseDto<>("success", "주문 성공", null);
+	}
+
+	@Transactional(readOnly = true)
+	public ResponseDto<List<OrderResp>> findMyOrderList(Long memberId) {
+
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+		List<Orders> orderList = orderRepository.findOrdersByMemberOrderByCreatedAtDesc(member);
+
+		List<OrderResp> orderRespList = new ArrayList<OrderResp>();
+
+		if (orderList.size() != 0) {
+			for (Orders order : orderList) {
+				OrderResp orderResponse = OrderResp.from(order);
+				orderRespList.add(orderResponse);
+			}
+		}
+
+		return new ResponseDto<>("success", "주문 조회 성공", orderRespList);
 	}
 
 }
