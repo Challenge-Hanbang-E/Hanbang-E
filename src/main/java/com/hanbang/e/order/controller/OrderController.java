@@ -1,5 +1,7 @@
 package com.hanbang.e.order.controller;
 
+import javax.validation.Valid;
+
 import com.hanbang.e.common.dto.ResponseDto;
 
 import com.hanbang.e.order.dto.OrderReq;
@@ -10,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +27,7 @@ public class OrderController {
 	private final OrderService orderService;
 
 	@PostMapping("")
-	public ResponseEntity<ResponseDto<?>> doOrder(@RequestParam Long productId, @RequestBody OrderReq orderReq) {
+	public ResponseEntity<ResponseDto<?>> doOrder(@RequestParam Long productId, @Valid @RequestBody OrderReq orderReq) {
 		Long memberId = 1L; // 임시용
 		ResponseDto<?> response = orderService.insertOrder(memberId, productId, orderReq);
 		return new ResponseEntity<>(response, HttpStatus.OK);

@@ -3,6 +3,7 @@ package com.hanbang.e.order.service;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hanbang.e.common.dto.ResponseDto;
 import com.hanbang.e.member.entity.Member;
@@ -21,6 +22,7 @@ public class OrderService {
 	private final MemberRepository memberRepository;
 	private final ProductRepository productRepository;
 
+	@Transactional
 	public ResponseDto<?> insertOrder(Long memberId, Long productId, OrderReq orderReq) {
 
 		Member member = memberRepository.findById(memberId)
@@ -33,11 +35,15 @@ public class OrderService {
 			throw new IllegalArgumentException("현재 판매하는 상품이 아닙니다.");
 		}
 
-		if (product.getStock() - product.getSales() == 0) {
+		if (product.getStock() == 0) {
 			throw new IllegalArgumentException("현재 재고가 없는 상품입니다.");
 		}
 
 		int orderQuantity = orderReq.getQuantity();
+
+		if (product.getStock() - orderQuantity < 0) {
+			throw new IllegalArgumentException(String.format("현재 남은 재고는 %d개 입니다.", product.getStock()));
+		}
 
 		product.sell(orderQuantity);
 
