@@ -39,19 +39,14 @@ public class Product {
 	@Column(nullable = false)
 	private Boolean onSale;
 
-	@ManyToOne
-	@JoinColumn(name = "BRAND_ID")
-	private Brand brand;
-
 	@Builder
-	public Product(String productName, Long price, String img, int stock, int sales, Boolean onSale, Brand brand) {
+	public Product(String productName, Long price, String img, int stock, int sales, Boolean onSale) {
 		this.productName = productName;
 		this.price = price;
 		this.img = img;
 		this.stock = stock;
 		this.sales = sales;
 		this.onSale = onSale;
-		this.brand = brand;
 	}
 
 	public void sell(int quantity) {

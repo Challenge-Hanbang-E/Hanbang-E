@@ -9,7 +9,6 @@ import lombok.Getter;
 public class ProductSimpleResp {
 
 	private Long productId;
-	private String brand;
 	private String name;
 	private Long price;
 	private String img;
@@ -17,7 +16,6 @@ public class ProductSimpleResp {
 	@Builder
 	public ProductSimpleResp(Long productId, String brand, String name, Long price, String img) {
 		this.productId = productId;
-		this.brand = brand;
 		this.name = name;
 		this.price = price;
 		this.img = img;
@@ -26,7 +24,6 @@ public class ProductSimpleResp {
 	public static ProductSimpleResp from(Product product) {
 		return ProductSimpleResp.builder()
 			.productId(product.getProductId())
-			.brand(product.getBrand().getBrandName())
 			.name(product.getProductName())
 			.price(product.getPrice())
 			.img(product.getImg())
