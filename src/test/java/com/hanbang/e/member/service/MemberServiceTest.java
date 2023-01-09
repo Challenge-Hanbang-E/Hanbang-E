@@ -35,5 +35,8 @@ public class MemberServiceTest {
 
         /* then - 검증 */
         assertThat(memberResp.getEmail()).isEqualTo(memberCreateReq.getEmail());
+        assertThat(memberResp.getAddress()).isEqualTo(memberCreateReq.getAddress());
     }
+
+
 }

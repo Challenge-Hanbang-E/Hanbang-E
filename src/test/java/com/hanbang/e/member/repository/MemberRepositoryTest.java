@@ -2,7 +2,6 @@ package com.hanbang.e.member.repository;
 
 import com.hanbang.e.member.entity.Member;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,16 +15,6 @@ public class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
-
-    @BeforeEach
-    public void setup() {
-
-        Member member1 = new Member("이메일","비밀번호","주소");
-        memberRepository.save(member1);
-
-        Member member2 = new Member("이메일1","비밀번호1","주소1");
-        memberRepository.save(member2);
-    }
 
     @Test
     @DisplayName("회원가입")

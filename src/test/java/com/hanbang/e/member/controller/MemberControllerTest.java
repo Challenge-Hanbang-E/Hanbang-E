@@ -4,14 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.hanbang.e.member.dto.MemberCreateReq;
-import com.hanbang.e.member.entity.Member;
-import com.hanbang.e.member.repository.MemberRepository;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -32,9 +29,6 @@ public class MemberControllerTest {
     @Autowired
     TestRestTemplate rt;
 
-    @Autowired
-    private MemberRepository memberRepository;
-
     private static ObjectMapper om;
 
     private static HttpHeaders headers;
@@ -44,13 +38,6 @@ public class MemberControllerTest {
         om = new ObjectMapper();
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-    }
-
-    @BeforeEach
-    public void setup() {
-
-        Member member = new Member("이메일","비밀번호","주소");
-        memberRepository.save(member);
     }
 
     @Test
