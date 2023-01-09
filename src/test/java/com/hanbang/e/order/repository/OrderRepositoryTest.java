@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -40,26 +41,21 @@ public class OrderRepositoryTest {
 	@BeforeEach
 	public void data() {
 		product1 = new Product("화장품", 23000L, "http://화장품.jpg", 0, 100, false);
-		ReflectionTestUtils.setField(product1, "productId", 1L);
 		productRepository.save(product1);
 
 		product2 = new Product("노트북 파우치", 34000L, "http://노트북_파우치.jpg", 50, 50, true);
-		ReflectionTestUtils.setField(product2, "productId", 2L);
 		productRepository.save(product2);
 
 		product3 = new Product("제로콜라세트", 12000L, "http://제로콜라세트.jpg", 20, 80, true);
-		ReflectionTestUtils.setField(product3, "productId", 3L);
 		productRepository.save(product3);
 
 		member = new Member("mina@naver.com", "12345", "제주도");
-		ReflectionTestUtils.setField(member, "memberId", 1L);
 		memberRepository.save(member);
 	}
 
-
+	@DisplayName("주문 목록 최신순 조회")
 	@Test
 	public void findOrdersByMemberOrderByCreatedAtDesc() {
-
 		/* given - 데이터 준비 */
 		Orders order1 = Orders.builder()
 			.destination(member.getAddress())
