@@ -33,8 +33,4 @@ public class Member {
 		this.password = password;
 		this.address = address;
 	}
-
-	public static Member of(String email, String password, String address) {
-		return new Member(email, password, address);
-	}
 }

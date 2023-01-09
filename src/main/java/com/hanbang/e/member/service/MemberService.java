@@ -19,9 +19,9 @@ public class MemberService {
     @Transactional
     public MemberResp signup(MemberCreateReq memberCreateReq) {
         validateDuplicateMember(memberCreateReq);
-        Member member = Member.of(memberCreateReq.getEmail(), memberCreateReq.getPassword(), memberCreateReq.getAddress());
+        Member member = memberCreateReq.toEntity();
         memberRepository.save(member);
-        return MemberResp.of(member.getEmail(), member.getAddress());
+        return MemberResp.from(member);
     }
 
     private void validateDuplicateMember(MemberCreateReq memberCreateReq) {

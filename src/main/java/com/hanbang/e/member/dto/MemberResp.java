@@ -1,5 +1,6 @@
 package com.hanbang.e.member.dto;
 
+import com.hanbang.e.member.entity.Member;
 import lombok.Getter;
 
 @Getter
@@ -12,7 +13,8 @@ public class MemberResp {
         this.email = email;
         this.address = address;
     }
-    public static MemberResp of(String email, String address) {
-        return new MemberResp(email, address);
+
+    public static MemberResp from(Member member) {
+        return new MemberResp(member.getEmail(), member.getAddress());
     }
 }
