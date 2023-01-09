@@ -10,7 +10,6 @@ import com.hanbang.e.member.repository.MemberRepository;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,27 +49,16 @@ public class MemberControllerTest {
     @BeforeEach
     public void setup() {
 
-        Member member1 = new Member("hanghae1@naver.com","Hanghae1!@","부산시 동래구");
-        memberRepository.save(member1);
-
-        Member member2 = new Member("hanghae2@naver.com","Hanghae2!@","부산시 부산진구");
-        memberRepository.save(member2);
-
-        Member member3 = new Member("hanghae3@naver.com","Hanghae3!@","부산시 북구");
-        memberRepository.save(member3);
+        Member member = new Member("이메일","비밀번호","주소");
+        memberRepository.save(member);
     }
 
-    @AfterEach
-    public void clear() {
-        memberRepository.deleteAll();
-    }
-
-    @DisplayName("회원가입")
     @Test
+    @DisplayName("회원가입")
     public void signupTest() throws JsonProcessingException {
         /* given - 데이터 준비 */
         MemberCreateReq memberCreateReq = new MemberCreateReq(
-                "hanghae4@naver.com","Hanghae11!@","부산시");
+                "hanghae@naver.com","Hanghae11!@","부산시");
 
         String body = om.writeValueAsString(memberCreateReq);
 
