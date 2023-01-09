@@ -192,12 +192,12 @@ public class OrderServiceTest {
 
 		Product product = new Product(productName, price, img, stock, sales, onSale);
 		ReflectionTestUtils.setField(product, "productId", fakeProductId);
-    Optional<Product> fakeProductOP = Optional.of(product);
+    	Optional<Product> fakeProductOP = Optional.of(product);
 		when(productRepository.findById(fakeProductId)).thenReturn(fakeProductOP);
 		
-    Member member = new Member("mina@naver.com", "12345", "제주도");
+    	Member member = new Member("mina@naver.com", "12345", "제주도");
 		ReflectionTestUtils.setField(member, "memberId", fakeMemberId);
-    when(memberRepository.findById(fakeMemberId)).thenReturn(Optional.of(member));
+    	when(memberRepository.findById(fakeMemberId)).thenReturn(Optional.of(member));
 
 		/* when & then - 테스트 실행 및 검증 */
 		assertThat(product.getStock() - orderReq.getQuantity() < 0).isTrue();
@@ -215,6 +215,10 @@ public class OrderServiceTest {
 		Long fakeMemberId = 1L;
 
 		/* stub - 가짜 객체 행동 정의 */
+		Member member = new Member("mina@naver.com", "12345", "제주도");
+		ReflectionTestUtils.setField(member, "memberId", fakeMemberId);
+		when(memberRepository.findById(fakeMemberId)).thenReturn(Optional.of(member));
+
 		Product product1 = new Product("화장품", 23000L, "http://화장품.jpg", 0, 100, false);
 		ReflectionTestUtils.setField(product1, "productId", 1L);
 
