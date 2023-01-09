@@ -18,16 +18,12 @@ public class MemberService {
 
     @Transactional
     public MemberResp signup(MemberCreateReq memberCreateReq) {
-        validateDuplicateMember(memberCreateReq);
-        Member member = memberCreateReq.toEntity();
-        memberRepository.save(member);
-        return MemberResp.from(member);
-    }
-
-    private void validateDuplicateMember(MemberCreateReq memberCreateReq) {
         memberRepository.findByEmail(memberCreateReq.getEmail())
                 .ifPresent(m -> {
                     throw new IllegalArgumentException("중복된 이메일이 존재합니다.");
                 });
+        Member member = memberCreateReq.toEntity();
+        memberRepository.save(member);
+        return MemberResp.from(member);
     }
 }
