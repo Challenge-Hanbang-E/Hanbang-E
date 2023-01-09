@@ -21,6 +21,8 @@ import com.hanbang.e.member.repository.MemberRepository;
 import com.hanbang.e.order.entity.Orders;
 import com.hanbang.e.order.repository.OrderRepository;
 import com.hanbang.e.order.dto.OrderReq;
+import com.hanbang.e.order.entity.Orders;
+import com.hanbang.e.order.repository.OrderRepository;
 import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.repository.ProductRepository;
 import com.jayway.jsonpath.DocumentContext;
@@ -158,4 +160,39 @@ class OrderControllerTest {
 
 	}
 
+	@DisplayName("주문 삭제")
+	@Test
+	public void deleteOrderTest() throws JsonProcessingException {
+		/* given - 데이터 준비 */
+		Member dummyMember = new Member("tj087@naver.com", "1234", "제주시");
+		Product product1 = Product.builder()
+			.productName("아이폰11")
+			.price(500000L)
+			.img("http....")
+			.stock(10)
+			.sales(50)
+			.onSale(true)
+			.build();
+		memberRepository.save(dummyMember);
+		productRepository.save(product1);
+		Orders dummyOrder = Orders.builder()
+			.destination(dummyMember.getAddress())
+			.quantity(1)
+			.productPrice(product1.getPrice())
+			.member(dummyMember)
+			.build();
+		orderRepository.save(dummyOrder);
+
+		/* when - 테스트 실행 */
+		HttpEntity<String> request = new HttpEntity<>(null, headers);
+		ResponseEntity<String> response = rt.exchange("/api/order?orderId=1", HttpMethod.DELETE, request, String.class);
+
+		/* then - 검증 */
+		DocumentContext dc = JsonPath.parse(response.getBody());
+		String result = dc.read("$.result");
+		String msg = dc.read("$.msg");
+
+		assertThat(result).isEqualTo("success");
+		assertThat(msg).isEqualTo("주문 삭제 성공");
+	}
 }
