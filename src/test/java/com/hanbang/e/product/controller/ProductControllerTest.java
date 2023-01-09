@@ -17,9 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hanbang.e.product.entity.Brand;
 import com.hanbang.e.product.entity.Product;
-import com.hanbang.e.product.repository.BrandRepository;
 import com.hanbang.e.product.repository.ProductRepository;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -33,9 +31,6 @@ class ProductControllerTest {
 	@Autowired
 	private ProductRepository productRepository;
 
-	@Autowired
-	private BrandRepository brandRepository;
-
 	private static ObjectMapper om;
 	private static HttpHeaders headers;
 
@@ -48,7 +43,6 @@ class ProductControllerTest {
 
 	@BeforeEach
 	public void dataSet() {
-		Brand productBrand = new Brand("apple");
 		Product product1 = Product.builder()
 			.productName("아이폰11")
 			.price(500000L)
@@ -56,7 +50,6 @@ class ProductControllerTest {
 			.stock(10)
 			.sales(50)
 			.onSale(true)
-			.brand(productBrand)
 			.build();
 		Product product2 = Product.builder()
 			.productName("아이폰12")
@@ -65,7 +58,6 @@ class ProductControllerTest {
 			.stock(15)
 			.sales(100)
 			.onSale(true)
-			.brand(productBrand)
 			.build();
 		Product product3 = Product.builder()
 			.productName("아이폰13")
@@ -74,9 +66,7 @@ class ProductControllerTest {
 			.stock(10)
 			.sales(75)
 			.onSale(true)
-			.brand(productBrand)
 			.build();
-		brandRepository.save(productBrand);
 		productRepository.save(product1);
 		productRepository.save(product2);
 		productRepository.save(product3);
@@ -85,7 +75,6 @@ class ProductControllerTest {
 	@AfterEach
 	public void dataClear() {
 		productRepository.deleteAll();
-		brandRepository.deleteAll();
 	}
 
 	@DisplayName("상품 상세조회")

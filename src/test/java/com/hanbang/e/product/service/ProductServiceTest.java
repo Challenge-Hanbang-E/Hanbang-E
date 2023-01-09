@@ -18,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 
 import com.hanbang.e.product.dto.ProductDetailResp;
 import com.hanbang.e.product.dto.ProductListResp;
-import com.hanbang.e.product.entity.Brand;
 import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.repository.ProductRepository;
 
@@ -41,7 +40,6 @@ class ProductServiceTest {
 
 		// 가짜 객체의 행동 정의
 		List<Product> productList = new ArrayList<>();
-		Brand productBrand2 = new Brand("apple");
 		productList.add(Product.builder()
 			.productName("아이폰13")
 			.price(1200000L)
@@ -49,7 +47,6 @@ class ProductServiceTest {
 			.stock(10)
 			.sales(75)
 			.onSale(true)
-			.brand(productBrand2)
 			.build());
 		productList.add(Product.builder()
 			.productName("아이폰12")
@@ -58,7 +55,6 @@ class ProductServiceTest {
 			.stock(15)
 			.sales(100)
 			.onSale(true)
-			.brand(productBrand2)
 			.build());
 		productList.add(Product.builder()
 			.productName("아이폰11")
@@ -67,8 +63,8 @@ class ProductServiceTest {
 			.stock(10)
 			.sales(50)
 			.onSale(true)
-			.brand(productBrand2)
 			.build());
+
 		when(productRepository.findByProductNameContainingOrderByPriceDesc(search, pageable)).thenReturn(productList);
 
 		/* when - 테스트 실행 */
@@ -91,7 +87,6 @@ class ProductServiceTest {
 
 		// 가짜 객체의 행동 정의
 		List<Product> productList = new ArrayList<>();
-		Brand productBrand2 = new Brand("apple");
 		productList.add(Product.builder()
 			.productName("아이폰11")
 			.price(500000L)
@@ -99,7 +94,6 @@ class ProductServiceTest {
 			.stock(10)
 			.sales(50)
 			.onSale(true)
-			.brand(productBrand2)
 			.build());
 		productList.add(Product.builder()
 			.productName("아이폰12")
@@ -108,7 +102,6 @@ class ProductServiceTest {
 			.stock(15)
 			.sales(100)
 			.onSale(true)
-			.brand(productBrand2)
 			.build());
 		productList.add(Product.builder()
 			.productName("아이폰13")
@@ -117,7 +110,6 @@ class ProductServiceTest {
 			.stock(10)
 			.sales(75)
 			.onSale(true)
-			.brand(productBrand2)
 			.build());
 		when(productRepository.findByProductNameContainingOrderByPriceAsc(search, pageable)).thenReturn(productList);
 
@@ -140,7 +132,6 @@ class ProductServiceTest {
 
 		// 가짜 객체의 행동 정의
 		List<Product> productList = new ArrayList<>();
-		Brand productBrand2 = new Brand("apple");
 		productList.add(Product.builder()
 			.productName("아이폰12")
 			.price(1000000L)
@@ -148,7 +139,6 @@ class ProductServiceTest {
 			.stock(15)
 			.sales(100)
 			.onSale(true)
-			.brand(productBrand2)
 			.build());
 		productList.add(Product.builder()
 			.productName("아이폰13")
@@ -157,7 +147,6 @@ class ProductServiceTest {
 			.stock(10)
 			.sales(75)
 			.onSale(true)
-			.brand(productBrand2)
 			.build());
 		productList.add(Product.builder()
 			.productName("아이폰11")
@@ -166,7 +155,6 @@ class ProductServiceTest {
 			.stock(10)
 			.sales(50)
 			.onSale(true)
-			.brand(productBrand2)
 			.build());
 		when(productRepository.findByProductNameContainingOrderBySalesDesc(search, pageable)).thenReturn(productList);
 
@@ -185,7 +173,6 @@ class ProductServiceTest {
 		/* given - 데이터 준비 */
 		Long id = 1L;
 
-		Brand productBrand2 = new Brand("apple");
 		Product product = Product.builder()
 			.productName("아이폰11")
 			.price(500000L)
@@ -193,7 +180,6 @@ class ProductServiceTest {
 			.stock(10)
 			.sales(50)
 			.onSale(true)
-			.brand(productBrand2)
 			.build();
 		Optional<Product> productOP = Optional.of(product);
 		when(productRepository.findById(id)).thenReturn(productOP);

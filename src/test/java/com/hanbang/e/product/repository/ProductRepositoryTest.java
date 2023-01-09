@@ -14,7 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.hanbang.e.product.entity.Brand;
 import com.hanbang.e.product.entity.Product;
 
 @Sql("classpath:db/productDomainTableInit.sql")
@@ -24,13 +23,8 @@ class ProductRepositoryTest {
 	@Autowired
 	private ProductRepository productRepository;
 
-	@Autowired
-	private BrandRepository brandRepository;
-
 	@BeforeEach
 	public void setup() {
-		Brand productBrand = new Brand("apple");
-
 		Product product1 = Product.builder()
 			.productName("아이폰11")
 			.price(500000L)
@@ -38,7 +32,6 @@ class ProductRepositoryTest {
 			.stock(10)
 			.sales(50)
 			.onSale(true)
-			.brand(productBrand)
 			.build();
 		Product product2 = Product.builder()
 			.productName("아이폰12")
@@ -47,7 +40,6 @@ class ProductRepositoryTest {
 			.stock(15)
 			.sales(100)
 			.onSale(true)
-			.brand(productBrand)
 			.build();
 		Product product3 = Product.builder()
 			.productName("아이폰13")
@@ -56,10 +48,8 @@ class ProductRepositoryTest {
 			.stock(10)
 			.sales(75)
 			.onSale(true)
-			.brand(productBrand)
 			.build();
 
-		brandRepository.save(productBrand);
 		productRepository.save(product1);
 		productRepository.save(product2);
 		productRepository.save(product3);
@@ -68,7 +58,6 @@ class ProductRepositoryTest {
 	@AfterEach
 	public void clear() {
 		productRepository.deleteAll();
-		brandRepository.deleteAll();
 	}
 
 	@DisplayName("검색결과 높은 가격순 조회")
