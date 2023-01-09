@@ -48,4 +48,9 @@ public class Product {
 		this.sales = sales;
 		this.onSale = onSale;
 	}
+
+	public void sell(int quantity) {
+		this.stock -= quantity;
+		this.sales += quantity;
+	}
 }
