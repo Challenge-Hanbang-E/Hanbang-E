@@ -3,13 +3,15 @@ package com.hanbang.e.member.service;
 import com.hanbang.e.member.dto.MemberCreateReq;
 import com.hanbang.e.member.dto.MemberResp;
 
+import com.hanbang.e.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +22,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
 
-    @Autowired
+    @InjectMocks
     private MemberService memberService;
+
+    @Mock
+    private MemberRepository memberRepository;
 
     @Test
     @DisplayName("회원가입")
@@ -37,6 +42,4 @@ public class MemberServiceTest {
         assertThat(memberResp.getEmail()).isEqualTo(memberCreateReq.getEmail());
         assertThat(memberResp.getAddress()).isEqualTo(memberCreateReq.getAddress());
     }
-
-
 }
