@@ -53,4 +53,16 @@ public class OrderService {
 		return new ResponseDto<>("success", "주문 성공", null);
 	}
 
+	@Transactional
+	public void deleteOrder(Long memberId, Long orderId) {
+
+		Orders orders = orderRepository.findById(orderId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
+
+		if (!orders.getMember().getMemberId().equals(memberId)) {
+			throw new IllegalArgumentException("주문 삭제 권한이 없습니다.");
+		}
+
+		orderRepository.deleteById(orderId);
+	}
 }

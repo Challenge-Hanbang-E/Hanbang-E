@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,8 +22,6 @@ import com.hanbang.e.order.repository.OrderRepository;
 import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.repository.ProductRepository;
 
-
-
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
 
@@ -39,21 +36,6 @@ public class OrderServiceTest {
 
 	@Mock
 	private ProductRepository productRepository;
-
-	private Member member;
-
-	@BeforeEach
-	public void memberData() {
-
-		Long fakeMemberId = 1L;
-
-		member = new Member("mina@naver.com", "12345", "제주도");
-		ReflectionTestUtils.setField(member, "memberId", fakeMemberId);
-
-		when(memberRepository.findById(fakeMemberId))
-			.thenReturn(Optional.of(member));
-
-	}
 
 	@DisplayName("주문 성공 경우")
 	@Test
@@ -77,9 +59,12 @@ public class OrderServiceTest {
 		ReflectionTestUtils.setField(product, "productId", fakeProductId);
 		Optional<Product> fakeProductOP = Optional.of(product);
 		when(productRepository.findById(fakeProductId)).thenReturn(fakeProductOP);
-
 		int beforeStock = fakeProductOP.get().getStock();
 		int beforeSales = fakeProductOP.get().getSales();
+
+		Member member = new Member("mina@naver.com", "12345", "제주도");
+		ReflectionTestUtils.setField(member, "memberId", fakeMemberId);
+		when(memberRepository.findById(fakeMemberId)).thenReturn(Optional.of(member));
 
 		Long fakeOrderId = 1L;
 		int orderQuantity = orderReq.getQuantity();
@@ -89,7 +74,6 @@ public class OrderServiceTest {
 
 		/* when - 테스트 실행 */
 		ResponseDto response = orderService.insertOrder(fakeMemberId, fakeProductId, orderReq);
-
 		int afterStock = fakeProductOP.get().getStock();
 		int afterSales = fakeProductOP.get().getSales();
 
@@ -135,12 +119,15 @@ public class OrderServiceTest {
 		Optional<Product> fakeProductOP = Optional.of(product);
 		when(productRepository.findById(fakeProductId)).thenReturn(fakeProductOP);
 
+		Member member = new Member("mina@naver.com", "12345", "제주도");
+		ReflectionTestUtils.setField(member, "memberId", fakeMemberId);
+		when(memberRepository.findById(fakeMemberId)).thenReturn(Optional.of(member));
+
 		/* when & then - 테스트 실행 및 검증 */
 		assertThatThrownBy(() -> orderService.insertOrder(fakeMemberId, fakeProductId, orderReq))
 			.isInstanceOf(IllegalArgumentException.class);
 		assertThatThrownBy(() -> orderService.insertOrder(fakeMemberId, fakeProductId, orderReq))
 			.hasMessageContaining("현재 판매하는 상품이 아닙니다.");
-
 	}
 
 	@DisplayName("현재 재고가 없는 상품인 경우, stock=0")
@@ -166,6 +153,10 @@ public class OrderServiceTest {
 		ReflectionTestUtils.setField(product, "productId", fakeProductId);
 		Optional<Product> fakeProductOP = Optional.of(product);
 		when(productRepository.findById(fakeProductId)).thenReturn(fakeProductOP);
+
+		Member member = new Member("mina@naver.com", "12345", "제주도");
+		ReflectionTestUtils.setField(member, "memberId", fakeMemberId);
+		when(memberRepository.findById(fakeMemberId)).thenReturn(Optional.of(member));
 
 		/* when & then - 테스트 실행 및 검증 */
 		assertThatThrownBy(() -> orderService.insertOrder(fakeMemberId, fakeProductId, orderReq))
@@ -196,9 +187,12 @@ public class OrderServiceTest {
 
 		Product product = new Product(productName, price, img, stock, sales, onSale);
 		ReflectionTestUtils.setField(product, "productId", fakeProductId);
+		Member member = new Member("mina@naver.com", "12345", "제주도");
+		ReflectionTestUtils.setField(member, "memberId", fakeMemberId);
 
 		Optional<Product> fakeProductOP = Optional.of(product);
 		when(productRepository.findById(fakeProductId)).thenReturn(fakeProductOP);
+		when(memberRepository.findById(fakeMemberId)).thenReturn(Optional.of(member));
 
 		/* when & then - 테스트 실행 및 검증 */
 		assertThat(product.getStock() - orderReq.getQuantity() < 0).isTrue();
@@ -208,6 +202,38 @@ public class OrderServiceTest {
 			.hasMessageContaining("현재 남은 재고는 %d개 입니다.", product.getStock());
 	}
 
+	@DisplayName("주문 삭제 확인, 작성자와 요청자가 다른 경우")
+	@Test
+	public void deleteOrderTest() {
+		/* given - 데이터 준비 */
+		Long requestMemberId = 2L;
 
+		/* stub - 가짜 객체 행동 정의 */
+		Member member = new Member("mina@naver.com", "12345", "제주도");
+		ReflectionTestUtils.setField(member, "memberId", 1L);
+		Product productPS = Product.builder()
+			.productName("맥북 프로")
+			.price(1000000L)
+			.img("https://맥북프로.jpg")
+			.stock(10)
+			.sales(3)
+			.onSale(true)
+			.build();
+		Orders orders = Orders.builder()
+			.destination("제주도")
+			.quantity(1)
+			.productPrice(1000000L)
+			.member(member)
+			.product(productPS)
+			.build();
+		Optional<Orders> ordersPS = Optional.of(orders);
+		when(orderRepository.findById(any())).thenReturn(ordersPS);
 
+		/* when & then - 테스트 실행 및 검증 */
+		assertThatThrownBy(
+			() -> {
+				orderService.deleteOrder(requestMemberId, 1L);
+			}).isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("주문 삭제 권한이 없습니다.");
+	}
 }
