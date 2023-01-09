@@ -1,5 +1,6 @@
 package com.hanbang.e.order.controller;
 
+import javax.servlet.ServletRequest;
 import javax.validation.Valid;
 
 import com.hanbang.e.common.dto.ResponseDto;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +33,12 @@ public class OrderController {
 		Long memberId = 1L; // 임시용
 		ResponseDto<?> response = orderService.insertOrder(memberId, productId, orderReq);
 		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
 
+	@DeleteMapping("")
+	public ResponseEntity<?> deleteOrder(@RequestParam Long orderId) {
+		Long memberId = 1L; // 임시용
+		orderService.deleteOrder(memberId, orderId);
+		return new ResponseEntity<>(new ResponseDto("success", "주문 삭제 성공", null), HttpStatus.OK);
 	}
 }
