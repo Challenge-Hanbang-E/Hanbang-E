@@ -106,7 +106,6 @@ class ProductControllerTest {
 		ResponseEntity<String> response = rt.exchange("/api/product/list?search=아이&orderby=priceasc&page=0&size=5",
 			HttpMethod.GET, request, String.class);
 
-		System.out.println(response);
 		/* then - 검증 */
 		DocumentContext dc = JsonPath.parse(response.getBody());
 		String result = dc.read("$.result");
