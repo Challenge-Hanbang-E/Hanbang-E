@@ -3,6 +3,9 @@ package com.hanbang.e.order.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +20,7 @@ import com.hanbang.e.common.dto.ResponseDto;
 import com.hanbang.e.member.entity.Member;
 import com.hanbang.e.member.repository.MemberRepository;
 import com.hanbang.e.order.dto.OrderReq;
+import com.hanbang.e.order.dto.OrderResp;
 import com.hanbang.e.order.entity.Orders;
 import com.hanbang.e.order.repository.OrderRepository;
 import com.hanbang.e.product.entity.Product;
@@ -37,7 +41,8 @@ public class OrderServiceTest {
 	@Mock
 	private ProductRepository productRepository;
 
-	@DisplayName("주문 성공 경우")
+
+	@DisplayName("상품 주문 API - 주문 성공 경우")
 	@Test
 	public void insertOrder_success() {
 
@@ -95,7 +100,7 @@ public class OrderServiceTest {
 
 	}
 
-	@DisplayName("현재 판매하는 상품이 아닌 경우, onSale=false")
+	@DisplayName("상품 주문 API - 현재 판매하는 상품이 아닌 경우, onSale=false")
 	@Test
 	public void insertOrder_onSaleCheck() {
 
@@ -130,7 +135,7 @@ public class OrderServiceTest {
 			.hasMessageContaining("현재 판매하는 상품이 아닙니다.");
 	}
 
-	@DisplayName("현재 재고가 없는 상품인 경우, stock=0")
+	@DisplayName("상품 주문 API - 현재 재고가 없는 상품인 경우, stock=0")
 	@Test
 	public void insertOrder_stockCheck() {
 
@@ -166,7 +171,7 @@ public class OrderServiceTest {
 
 	}
 
-	@DisplayName("현재 재고보다 주문수량이 많이 들어 온 경우, stock - quantity < 0")
+	@DisplayName("상품 주문 API - 현재 재고보다 주문수량이 많이 들어 온 경우, stock - quantity < 0")
 	@Test
 	public void insertOrder_stockAndQuantityCheck() {
 
@@ -187,12 +192,12 @@ public class OrderServiceTest {
 
 		Product product = new Product(productName, price, img, stock, sales, onSale);
 		ReflectionTestUtils.setField(product, "productId", fakeProductId);
-		Member member = new Member("mina@naver.com", "12345", "제주도");
-		ReflectionTestUtils.setField(member, "memberId", fakeMemberId);
-
-		Optional<Product> fakeProductOP = Optional.of(product);
+    Optional<Product> fakeProductOP = Optional.of(product);
 		when(productRepository.findById(fakeProductId)).thenReturn(fakeProductOP);
-		when(memberRepository.findById(fakeMemberId)).thenReturn(Optional.of(member));
+		
+    Member member = new Member("mina@naver.com", "12345", "제주도");
+		ReflectionTestUtils.setField(member, "memberId", fakeMemberId);
+    when(memberRepository.findById(fakeMemberId)).thenReturn(Optional.of(member));
 
 		/* when & then - 테스트 실행 및 검증 */
 		assertThat(product.getStock() - orderReq.getQuantity() < 0).isTrue();
@@ -200,6 +205,79 @@ public class OrderServiceTest {
 			.isInstanceOf(IllegalArgumentException.class);
 		assertThatThrownBy(() -> orderService.insertOrder(fakeMemberId, fakeProductId, orderReq))
 			.hasMessageContaining("현재 남은 재고는 %d개 입니다.", product.getStock());
+	}
+
+	@DisplayName("주문 조회 API")
+	@Test
+	public void findMyOrderList() {
+
+		/* given - 데이터 준비 */
+		Long fakeMemberId = 1L;
+
+		/* stub - 가짜 객체 행동 정의 */
+		Product product1 = new Product("화장품", 23000L, "http://화장품.jpg", 0, 100, false);
+		ReflectionTestUtils.setField(product1, "productId", 1L);
+
+		Product product2 = new Product("노트북 파우치", 34000L, "http://노트북_파우치.jpg", 50, 50, true);
+		ReflectionTestUtils.setField(product2, "productId", 2L);
+
+		Product product3 = new Product("제로콜라세트", 12000L, "http://제로콜라세트.jpg", 20, 80, true);
+		ReflectionTestUtils.setField(product2, "productId", 3L);
+
+		Orders order1 = Orders.builder()
+			.destination(member.getAddress())
+			.quantity(3)
+			.productPrice(23000L)
+			.member(member)
+			.product(product1)
+			.build();
+		ReflectionTestUtils.setField(order1, "orderId", 3L);
+		ReflectionTestUtils.setField(order1, "createdAt", LocalDateTime.of(2023, 01, 9, 02, 54, 15, 126515));
+
+		Orders order2 = Orders.builder()
+			.destination(member.getAddress())
+			.quantity(2)
+			.productPrice(36000L)
+			.member(member)
+			.product(product2)
+			.build();
+		ReflectionTestUtils.setField(order2, "orderId", 2L);
+		ReflectionTestUtils.setField(order2, "createdAt", LocalDateTime.of(2023, 01, 9, 02, 54, 06, 516230));
+
+
+		Orders order3 = Orders.builder()
+			.destination(member.getAddress())
+			.quantity(5)
+			.productPrice(12000L)
+			.member(member)
+			.product(product3)
+			.build();
+		ReflectionTestUtils.setField(order3, "orderId", 1L);
+		ReflectionTestUtils.setField(order3, "createdAt",  LocalDateTime.of(2023, 01, 9, 02, 53, 19, 539770));
+
+		List<Orders> orderList = new ArrayList<>();
+		orderList.add(order1);
+		orderList.add(order2);
+		orderList.add(order3);
+
+		when(orderRepository.findOrdersByMemberOrderByCreatedAtDesc(member)).thenReturn(orderList);
+
+		/* when - 테스트 실행 */
+		ResponseDto<List<OrderResp>> response = orderService.findMyOrderList(fakeMemberId);
+
+		/* then - 검증 */
+		assertThat(response.getData().get(0).getOrderId()).isEqualTo(order1.getOrderId());
+		assertThat(response.getData().get(1).getOrderId()).isEqualTo(order2.getOrderId());
+		assertThat(response.getData().get(2).getOrderId()).isEqualTo(order3.getOrderId());
+
+		assertThat(response.getData().get(0).getOrderDate()).isEqualTo(order1.getCreatedAt());
+		assertThat(response.getData().get(0).getTotalPrice()).isEqualTo(order1.getTotalPrice());
+		assertThat(response.getData().get(1).getQuantity()).isEqualTo(order2.getQuantity());
+		assertThat(response.getData().get(2).getProductPrice()).isEqualTo(order3.getProductPrice());
+		assertThat(response.getData().get(0).getProductId()).isEqualTo(order1.getProduct().getProductId());
+		assertThat(response.getData().get(1).getProductName()).isEqualTo(order2.getProduct().getProductName());
+		assertThat(response.getData().get(2).getImg()).isEqualTo(order3.getProduct().getImg());
+
 	}
 
 	@DisplayName("주문 삭제 확인, 작성자와 요청자가 다른 경우")

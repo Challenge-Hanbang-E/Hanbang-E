@@ -18,6 +18,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hanbang.e.member.entity.Member;
 import com.hanbang.e.member.repository.MemberRepository;
+import com.hanbang.e.order.entity.Orders;
+import com.hanbang.e.order.repository.OrderRepository;
 import com.hanbang.e.order.dto.OrderReq;
 import com.hanbang.e.order.entity.Orders;
 import com.hanbang.e.order.repository.OrderRepository;
@@ -51,8 +53,8 @@ class OrderControllerTest {
 		headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 	}
-
-	@DisplayName("상품 주문")
+  
+  @DisplayName("상품 주문")
 	@Test
 	void doOrderTest() throws JsonProcessingException {
 		/* given - 데이터 준비 */
@@ -79,9 +81,83 @@ class OrderControllerTest {
 		DocumentContext dc = JsonPath.parse(response.getBody());
 		String result = dc.read("$.result");
 		String msg = dc.read("$.msg");
+    
+    assertThat(result).isEqualTo("success");
+		assertThat(msg).isEqualTo("주문 성공");
+    
+  }
+  
+	@DisplayName("주문 조회 API")
+	@Test
+	void getMyOrderListTest() throws JsonProcessingException {
+		/* given - 데이터 준비 */
+		Product product1 = new Product("화장품", 23000L, "http://화장품.jpg", 50, 50, true);
+		productRepository.save(product1);
+
+		Product product2 = new Product("노트북 파우치", 36000L, "http://노트북_파우치.jpg", 50, 50, true);
+		productRepository.save(product2);
+
+		Product product3 = new Product("제로콜라세트", 12000L, "http://제로콜라세트.jpg", 50, 50, true);
+		productRepository.save(product3);
+
+		Member member = new Member("mina@naver.com", "12345", "제주도");
+		memberRepository.save(member);
+
+		Orders order1 = Orders.builder()
+			.destination(member.getAddress())
+			.quantity(3)
+			.productPrice(23000L)
+			.member(member)
+			.product(product1)
+			.build();
+		orderRepository.save(order1);
+
+		Orders order2 = Orders.builder()
+			.destination(member.getAddress())
+			.quantity(2)
+			.productPrice(36000L)
+			.member(member)
+			.product(product2)
+			.build();
+		orderRepository.save(order2);
+
+		Orders order3 = Orders.builder()
+			.destination(member.getAddress())
+			.quantity(5)
+			.productPrice(12000L)
+			.member(member)
+			.product(product3)
+			.build();
+		orderRepository.save(order3);
+    
+		/* when - 테스트 실행 */
+		HttpEntity<String> request = new HttpEntity<>(null, headers);
+		ResponseEntity<String> response = rt.exchange("/api/order/list", HttpMethod.GET, request, String.class);
+
+		/* then - 검증 */
+    DocumentContext dc = JsonPath.parse(response.getBody());
+		String result = dc.read("$.result");
+		String msg = dc.read("$.msg");
+		Integer orderId = dc.read("$.data[1].orderId");
+		String orderDate = dc.read("$.data[1].orderDate");
+		Integer quantity = dc.read("$.data[1].quantity");
+		Integer productPrice = dc.read("$.data[1].productPrice");
+		Integer totalPrice = dc.read("$.data[1].totalPrice");
+		Integer productId = dc.read("$.data[1].productId");
+		String productName = dc.read("$.data[1].productName");
+		String img = dc.read("$.data[1].img");
 
 		assertThat(result).isEqualTo("success");
-		assertThat(msg).isEqualTo("주문 성공");
+		assertThat(msg).isEqualTo("주문 조회 성공");
+		assertThat(orderId).isEqualTo(2);
+		assertThat(orderDate.split("\\.")[0]).isEqualTo(order2.getCreatedAt().toString().split("\\.")[0]);
+		assertThat(quantity).isEqualTo(order2.getQuantity());
+		assertThat(productPrice).isEqualTo(36000);
+		assertThat(totalPrice).isEqualTo(72000);
+		assertThat(productId).isEqualTo(2);
+		assertThat(productName).isEqualTo(order2.getProduct().getProductName());
+		assertThat(img).isEqualTo(order2.getProduct().getImg());
+
 	}
 
 	@DisplayName("주문 삭제")

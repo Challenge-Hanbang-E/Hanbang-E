@@ -1,11 +1,14 @@
 package com.hanbang.e.order.controller;
 
+
+import java.util.List;
+
 import javax.servlet.ServletRequest;
 import javax.validation.Valid;
 
 import com.hanbang.e.common.dto.ResponseDto;
-
 import com.hanbang.e.order.dto.OrderReq;
+import com.hanbang.e.order.dto.OrderResp;
 import com.hanbang.e.order.service.OrderService;
 
 import lombok.RequiredArgsConstructor;
@@ -13,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,4 +45,12 @@ public class OrderController {
 		orderService.deleteOrder(memberId, orderId);
 		return new ResponseEntity<>(new ResponseDto("success", "주문 삭제 성공", null), HttpStatus.OK);
 	}
+
+	@GetMapping("/list")
+	public ResponseEntity<ResponseDto<List<OrderResp>>> getMyOrderList() {
+		Long memberId = 1L; // 임시용
+		ResponseDto<List<OrderResp>> response = orderService.findMyOrderList(memberId);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
 }
