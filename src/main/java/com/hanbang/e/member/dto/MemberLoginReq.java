@@ -1,5 +1,6 @@
 package com.hanbang.e.member.dto;
 
+import com.hanbang.e.member.entity.Member;
 import lombok.Getter;
 
 import javax.validation.constraints.Email;
@@ -20,5 +21,11 @@ public class MemberLoginReq {
     public MemberLoginReq(String email, String password) {
         this.email = email;
         this.password = password;
+    }
+    public Member toEntity() {
+        return Member.builder()
+                .email(email)
+                .password(password)
+                .build();
     }
 }

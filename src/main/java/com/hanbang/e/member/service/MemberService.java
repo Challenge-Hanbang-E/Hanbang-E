@@ -35,7 +35,7 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberResp login(MemberLoginReq memberLoginReq, HttpServletResponse httpServletResponse) {
+    public void login(MemberLoginReq memberLoginReq, HttpServletResponse httpServletResponse) {
         Member member = memberRepository.findByEmail(memberLoginReq.getEmail()).orElseThrow(
                 () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
         );
@@ -43,6 +43,5 @@ public class MemberService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
         httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(member.getEmail()));
-        return MemberResp.from(member);
     }
 }
