@@ -87,6 +87,9 @@ public class OrderService {
 			throw new IllegalArgumentException("주문 삭제 권한이 없습니다.");
 		}
 
+		Product cancledProduct = orders.getProduct();
+		cancledProduct.orderCancel(orders.getQuantity());
+		
 		orderRepository.deleteById(orderId);
 	}
 
