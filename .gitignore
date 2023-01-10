@@ -38,3 +38,5 @@ out/
 .vscode/
 
 gradle
+### jwt ###
+src/main/resources/application-config.properties
