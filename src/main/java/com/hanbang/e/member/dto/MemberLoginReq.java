@@ -2,12 +2,14 @@ package com.hanbang.e.member.dto;
 
 import com.hanbang.e.member.entity.Member;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @Getter
+@NoArgsConstructor
 public class MemberLoginReq {
 
     @NotBlank(message = "이메일을 입력해주세요.")
