@@ -7,13 +7,13 @@ assignees: ''
 
 ---
 
-### ✍ Description
+## ✍ Description
 설명을 작성해주세요.
 
 
-### Todo
+## Todo
 - [ ] todo
 - [ ] todo
 
-### Additional Information
+## Additional Information
 기타사항

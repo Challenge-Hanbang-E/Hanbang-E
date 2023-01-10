@@ -8,10 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Product {
 
 	@Id
@@ -28,7 +31,7 @@ public class Product {
 	private String img;
 
 	@Column(nullable = false)
-	private int amount;
+	private int stock;
 
 	@Column(nullable = false)
 	private int sales;
@@ -36,7 +39,23 @@ public class Product {
 	@Column(nullable = false)
 	private Boolean onSale;
 
-	@ManyToOne
-	@JoinColumn(name = "BRAND_ID")
-	private Brand brand;
+	@Builder
+	public Product(String productName, Long price, String img, int stock, int sales, Boolean onSale) {
+		this.productName = productName;
+		this.price = price;
+		this.img = img;
+		this.stock = stock;
+		this.sales = sales;
+		this.onSale = onSale;
+	}
+
+	public void sell(int quantity) {
+		this.stock -= quantity;
+		this.sales += quantity;
+	}
+
+	public void orderCancel(int quantity) {
+		this.stock += quantity;
+		this.sales -= quantity;
+	}
 }
