@@ -2,7 +2,6 @@ package com.hanbang.e.member.repository;
 
 import com.hanbang.e.member.entity.Member;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,11 +25,6 @@ public class MemberRepositoryTest {
 
         Member member2 = new Member("이메일1","비밀번호1","주소1");
         memberRepository.save(member2);
-    }
-
-    @AfterEach
-    public void clear() {
-        memberRepository.deleteAll();
     }
 
     @Test

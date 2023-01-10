@@ -66,65 +66,74 @@ public class MemberControllerTest {
         /* given - 데이터 준비 */
         MemberCreateReq memberCreateReq = new MemberCreateReq(
                 "hanghae@naver.com","Hanghae11!@","부산시");
-
         String body = om.writeValueAsString(memberCreateReq);
 
         /* when - 테스트 실행 */
         HttpEntity<String> request = new HttpEntity<>(body, headers);
         ResponseEntity<String> response = rt.exchange("/api/member/signup", HttpMethod.POST, request, String.class);
-
-        /* then - 검증 */
         DocumentContext dc = JsonPath.parse(response.getBody());
         String result = dc.read("$.result");
         String msg = dc.read("$.msg");
 
+        /* then - 검증 */
         assertThat(result).isEqualTo("success");
         assertThat(msg).isEqualTo("회원가입 완료");
     }
 
     @Test
-    @DisplayName("로그인")
-    public void loginTest() throws JsonProcessingException {
+    @DisplayName("로그인 성공")
+    public void loginSuccessTest() throws JsonProcessingException {
         /* given - 데이터 준비 */
         MemberLoginReq memberLoginReq1 = new MemberLoginReq("이메일" ,"비밀번호");
         String body1 = om.writeValueAsString(memberLoginReq1);
 
-        MemberLoginReq memberLoginReq2 = new MemberLoginReq("이메일1" ,"비밀번호");
-        String body2 = om.writeValueAsString(memberLoginReq2);
-
-        MemberLoginReq memberLoginReq3 = new MemberLoginReq("이메일" ,"비밀번호1");
-        String body3 = om.writeValueAsString(memberLoginReq3);
-
         /* when - 테스트 실행 */
         HttpEntity<String> request1 = new HttpEntity<>(body1, headers);
         ResponseEntity<String> response1 = rt.exchange("/api/member/login", HttpMethod.POST, request1, String.class);
-
-        HttpEntity<String> request2 = new HttpEntity<>(body2, headers);
-        ResponseEntity<String> response2 = rt.exchange("/api/member/login", HttpMethod.POST, request2, String.class);
-
-        HttpEntity<String> request3 = new HttpEntity<>(body3, headers);
-        ResponseEntity<String> response3 = rt.exchange("/api/member/login", HttpMethod.POST, request3, String.class);
-
-        /* then - 검증 */
         DocumentContext dc1 = JsonPath.parse(response1.getBody());
         String result1 = dc1.read("$.result");
         String msg1 = dc1.read("$.msg");
 
-        DocumentContext dc2 = JsonPath.parse(response2.getBody());
-        String result2 = dc2.read("$.result");
-        String msg2 = dc2.read("$.msg");
-
-        DocumentContext dc3 = JsonPath.parse(response3.getBody());
-        String result3 = dc3.read("$.result");
-        String msg3 = dc3.read("$.msg");
-
+        /* then - 검증 */
         assertThat(result1).isEqualTo("success");
         assertThat(msg1).isEqualTo("로그인 완료");
+    }
 
-        assertThat(result2).isEqualTo("fail");
-        assertThat(msg2).isEqualTo("등록된 사용자가 없습니다.");
+    @Test
+    @DisplayName("로그인 실패 (등록된 사용자가 없습니다)")
+    public void loginFailTest() throws JsonProcessingException {
+        /* given - 데이터 준비 */
+        MemberLoginReq memberLoginReq = new MemberLoginReq("이메일1" ,"비밀번호");
+        String body = om.writeValueAsString(memberLoginReq);
 
-        assertThat(result3).isEqualTo("fail");
-        assertThat(msg3).isEqualTo("비밀번호가 일치하지 않습니다.");
+        /* when - 테스트 실행 */
+        HttpEntity<String> request = new HttpEntity<>(body, headers);
+        ResponseEntity<String> response = rt.exchange("/api/member/login", HttpMethod.POST, request, String.class);
+        DocumentContext dc = JsonPath.parse(response.getBody());
+        String result = dc.read("$.result");
+        String msg = dc.read("$.msg");
+
+        /* then - 검증 */
+        assertThat(result).isEqualTo("fail");
+        assertThat(msg).isEqualTo("등록된 사용자가 없습니다.");
+    }
+
+    @Test
+    @DisplayName("로그인 실패 (비밀번호가 일치하지 않습니다.)")
+    public void loginFail1Test() throws JsonProcessingException {
+        /* given - 데이터 준비 */
+        MemberLoginReq memberLoginReq = new MemberLoginReq("이메일" ,"비밀번호1");
+        String body = om.writeValueAsString(memberLoginReq);
+
+        /* when - 테스트 실행 */
+        HttpEntity<String> request = new HttpEntity<>(body, headers);
+        ResponseEntity<String> response = rt.exchange("/api/member/login", HttpMethod.POST, request, String.class);
+        DocumentContext dc = JsonPath.parse(response.getBody());
+        String result = dc.read("$.result");
+        String msg = dc.read("$.msg");
+
+        /* then - 검증 */
+        assertThat(result).isEqualTo("fail");
+        assertThat(msg).isEqualTo("비밀번호가 일치하지 않습니다.");
     }
 }
