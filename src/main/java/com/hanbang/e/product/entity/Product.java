@@ -53,4 +53,9 @@ public class Product {
 		this.stock -= quantity;
 		this.sales += quantity;
 	}
+
+	public void orderCancel(int quantity) {
+		this.stock += quantity;
+		this.sales -= quantity;
+	}
 }
