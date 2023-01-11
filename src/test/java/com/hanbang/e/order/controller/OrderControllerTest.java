@@ -3,6 +3,7 @@ package com.hanbang.e.order.controller;
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hanbang.e.common.jwt.JwtUtil;
 import com.hanbang.e.member.entity.Member;
 import com.hanbang.e.member.repository.MemberRepository;
 import com.hanbang.e.order.entity.Orders;
@@ -43,9 +45,11 @@ class OrderControllerTest {
 	@Autowired
 	private OrderRepository orderRepository;
 
+	@Autowired
+	private JwtUtil jwtUtil;
+
 	private static ObjectMapper om;
 	private static HttpHeaders headers;
-
 
 	@BeforeAll
 	public static void init() {
@@ -53,11 +57,12 @@ class OrderControllerTest {
 		headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 	}
-  
-  @DisplayName("상품 주문")
+
+	@DisplayName("상품 주문")
 	@Test
 	void doOrderTest() throws JsonProcessingException {
 		/* given - 데이터 준비 */
+		headers.add("Authorization", jwtUtil.createToken(1L));
 		Member dummyMember = new Member("tj087@naver.com", "1234", "제주시");
 		Product product1 = Product.builder()
 			.productName("아이폰11")
@@ -81,16 +86,17 @@ class OrderControllerTest {
 		DocumentContext dc = JsonPath.parse(response.getBody());
 		String result = dc.read("$.result");
 		String msg = dc.read("$.msg");
-    
-    assertThat(result).isEqualTo("success");
+
+		assertThat(result).isEqualTo("success");
 		assertThat(msg).isEqualTo("주문 성공");
-    
-  }
-  
+
+	}
+
 	@DisplayName("주문 조회 API")
 	@Test
 	void getMyOrderListTest() throws JsonProcessingException {
 		/* given - 데이터 준비 */
+		headers.add("Authorization", jwtUtil.createToken(1L));
 		Product product1 = new Product("화장품", 23000L, "http://화장품.jpg", 50, 50, true);
 		productRepository.save(product1);
 
@@ -129,13 +135,13 @@ class OrderControllerTest {
 			.product(product3)
 			.build();
 		orderRepository.save(order3);
-    
+
 		/* when - 테스트 실행 */
 		HttpEntity<String> request = new HttpEntity<>(null, headers);
 		ResponseEntity<String> response = rt.exchange("/api/order/list", HttpMethod.GET, request, String.class);
 
 		/* then - 검증 */
-    DocumentContext dc = JsonPath.parse(response.getBody());
+		DocumentContext dc = JsonPath.parse(response.getBody());
 		String result = dc.read("$.result");
 		String msg = dc.read("$.msg");
 		Integer orderId = dc.read("$.data[1].orderId");
@@ -164,6 +170,7 @@ class OrderControllerTest {
 	@Test
 	public void deleteOrderTest() throws JsonProcessingException {
 		/* given - 데이터 준비 */
+		headers.add("Authorization", jwtUtil.createToken(1L));
 		Member dummyMember = new Member("tj087@naver.com", "1234", "제주시");
 		Product product1 = Product.builder()
 			.productName("아이폰11")

@@ -4,9 +4,11 @@ package com.hanbang.e.order.controller;
 import java.util.List;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.hanbang.e.common.dto.ResponseDto;
+import com.hanbang.e.common.jwt.JwtUtil;
 import com.hanbang.e.order.dto.OrderReq;
 import com.hanbang.e.order.dto.OrderResp;
 import com.hanbang.e.order.service.OrderService;
@@ -31,26 +33,27 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
 	private final OrderService orderService;
+	private final JwtUtil jwtUtil;
 
 	@PostMapping("")
-	public ResponseEntity<ResponseDto<?>> doOrder(@RequestParam Long productId, @Valid @RequestBody OrderReq orderReq) {
-		Long memberId = 1L; // 임시용
+	public ResponseEntity<ResponseDto<?>> doOrder(@RequestParam Long productId, @Valid @RequestBody OrderReq orderReq, HttpServletRequest request) {
+		Long memberId = jwtUtil.getMemberIdFromToken(request);
 		ResponseDto<?> response = orderService.insertOrder(memberId, productId, orderReq);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@DeleteMapping("")
-	public ResponseEntity<?> deleteOrder(@RequestParam Long orderId) {
-		Long memberId = 1L; // 임시용
-		orderService.deleteOrder(memberId, orderId);
-		return new ResponseEntity<>(new ResponseDto("success", "주문 삭제 성공", null), HttpStatus.OK);
-	}
-
 	@GetMapping("/list")
-	public ResponseEntity<ResponseDto<List<OrderResp>>> getMyOrderList() {
-		Long memberId = 1L; // 임시용
+	public ResponseEntity<ResponseDto<List<OrderResp>>> getMyOrderList(HttpServletRequest request) {
+		Long memberId = jwtUtil.getMemberIdFromToken(request);
 		ResponseDto<List<OrderResp>> response = orderService.findMyOrderList(memberId);
 		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@DeleteMapping("")
+	public ResponseEntity<?> deleteOrder(@RequestParam Long orderId, HttpServletRequest request) {
+		Long memberId = jwtUtil.getMemberIdFromToken(request);
+		orderService.deleteOrder(memberId, orderId);
+		return new ResponseEntity<>(new ResponseDto("success", "주문 삭제 성공", null), HttpStatus.OK);
 	}
 
 }
