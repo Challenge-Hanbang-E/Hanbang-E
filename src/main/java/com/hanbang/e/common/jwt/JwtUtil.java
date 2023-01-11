@@ -17,20 +17,26 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.undo.AbstractUndoableEdit;
 
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
 
+	private ObjectMapper om;
+
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String AUTHORIZATION_KEY = "auth";
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final long TOKEN_TIME = 60 * 60 * 1000L;
+    private static final long TOKEN_TIME = 60 * 60 * 10 * 1000L;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -51,13 +57,15 @@ public class JwtUtil {
         return null;
     }
 
-    public String createToken(String email) {
+    public String createToken(Long memberId) {
         Date date = new Date();
+		Claims claims = Jwts.claims();
+		claims.put("memberID", memberId);
 
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(email)
-                        .claim(AUTHORIZATION_KEY, email)
+                        .setSubject("token")
+						.setClaims(claims)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)
@@ -80,7 +88,21 @@ public class JwtUtil {
         return false;
     }
 
-    public Claims getMemberInfoFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-    }
+	public Long getMemberIdFromToken(HttpServletRequest request) {
+		String token = resolveToken(request);
+
+		// 토큰이 있는지 확인
+		if (token == null)
+			throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
+
+		// 토큰이 있다면 올바른 토큰인지 확인
+		if (!validateToken(token))
+			throw new IllegalArgumentException("잘못된 토큰입니다.");
+
+		// 토큰에 있는 유저정보를 꺼내고 반환
+		Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+		String strId = String.valueOf(claims.get("memberID"));
+		Long memberId = Long.valueOf(strId);
+		return memberId;
+	}
 }
