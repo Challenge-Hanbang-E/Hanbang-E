@@ -40,3 +40,6 @@ gradle
 
 ### jwt ###
 src/main/resources/application-config.properties
+
+### MySQL ###
+src/main/resources/application-dev.properties

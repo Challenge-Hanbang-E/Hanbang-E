@@ -28,7 +28,7 @@ public class ProductController {
 		Pageable pageable) {
 
 		ProductListResp response = productService.searchProduct(search, orderby, pageable);
-		return new ResponseEntity(new ResponseDto("success", "상품 검색 성공", response), HttpStatus.OK);
+		return new ResponseEntity(new ResponseDto("success", " 성공", response), HttpStatus.OK);
 	}
 
 	@GetMapping("/details/{productId}")
