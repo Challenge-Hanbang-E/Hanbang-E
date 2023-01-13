@@ -15,13 +15,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.TestExecutionListeners;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hanbang.e.common.env.AcceptanceTestExecutionListener;
 import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.repository.ProductRepository;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 
+@TestExecutionListeners(value = {AcceptanceTestExecutionListener.class,}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ProductControllerTest {
 
@@ -39,11 +42,6 @@ class ProductControllerTest {
 		om = new ObjectMapper();
 		headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-	}
-
-	@AfterEach
-	public void dataClear() {
-		productRepository.deleteAll();
 	}
 
 	@DisplayName("상품 상세조회")
