@@ -41,8 +41,42 @@ class ProductControllerTest {
 		headers.setContentType(MediaType.APPLICATION_JSON);
 	}
 
-	@BeforeEach
-	public void dataSet() {
+	@AfterEach
+	public void dataClear() {
+		productRepository.deleteAll();
+	}
+
+	@DisplayName("상품 상세조회")
+	@Test
+	public void getProductDetailsTest() {
+		/* given - 데이터 준비 */
+		Product product1 = Product.builder()
+			.productName("아이폰11")
+			.price(500000L)
+			.img("http....")
+			.stock(10)
+			.sales(50)
+			.onSale(true)
+			.build();
+		productRepository.save(product1);
+
+		/* when - 테스트 실행 */
+		HttpEntity<String> request = new HttpEntity<>(null, headers);
+		ResponseEntity<String> response = rt.exchange("/api/product/details/"+ product1.getProductId(), HttpMethod.GET, request, String.class);
+
+		/* then - 검증 */
+		DocumentContext dc = JsonPath.parse(response.getBody());
+		String result = dc.read("$.result");
+		String name = dc.read("$.data.name");
+
+		assertThat(result).isEqualTo("success");
+		assertThat(name).isEqualTo("아이폰11");
+	}
+
+	@DisplayName("상품 검색하기, 낮은 가격순 조회")
+	@Test
+	public void searchProductOrderByLowToHighTest() {
+		/* given - 데이터 준비 */
 		Product product1 = Product.builder()
 			.productName("아이폰11")
 			.price(500000L)
@@ -67,39 +101,10 @@ class ProductControllerTest {
 			.sales(75)
 			.onSale(true)
 			.build();
+
 		productRepository.save(product1);
 		productRepository.save(product2);
 		productRepository.save(product3);
-	}
-
-	@AfterEach
-	public void dataClear() {
-		productRepository.deleteAll();
-	}
-
-	@DisplayName("상품 상세조회")
-	@Test
-	public void getProductDetailsTest() {
-		/* given - 데이터 준비 */
-
-		/* when - 테스트 실행 */
-		HttpEntity<String> request = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = rt.exchange("/api/product/details/1", HttpMethod.GET, request, String.class);
-
-		System.out.println(response);
-		/* then - 검증 */
-		DocumentContext dc = JsonPath.parse(response.getBody());
-		String result = dc.read("$.result");
-		String name = dc.read("$.data.name");
-
-		assertThat(result).isEqualTo("success");
-		assertThat(name).isEqualTo("아이폰11");
-	}
-
-	@DisplayName("상품 검색하기, 낮은 가격순 조회")
-	@Test
-	public void searchProductOrderByLowToHighTest() {
-		/* given - 데이터 준비 */
 
 		/* when - 테스트 실행 */
 		HttpEntity<String> request = new HttpEntity<>(null, headers);
@@ -124,6 +129,34 @@ class ProductControllerTest {
 	@Test
 	public void searchProductOrderByHighToLowTest() {
 		/* given - 데이터 준비 */
+		Product product1 = Product.builder()
+			.productName("아이폰11")
+			.price(500000L)
+			.img("http....")
+			.stock(10)
+			.sales(50)
+			.onSale(true)
+			.build();
+		Product product2 = Product.builder()
+			.productName("아이폰12")
+			.price(1000000L)
+			.img("http....")
+			.stock(15)
+			.sales(100)
+			.onSale(true)
+			.build();
+		Product product3 = Product.builder()
+			.productName("아이폰13")
+			.price(1200000L)
+			.img("http....")
+			.stock(10)
+			.sales(75)
+			.onSale(true)
+			.build();
+
+		productRepository.save(product1);
+		productRepository.save(product2);
+		productRepository.save(product3);
 
 		/* when - 테스트 실행 */
 		HttpEntity<String> request = new HttpEntity<>(null, headers);
@@ -148,6 +181,34 @@ class ProductControllerTest {
 	@Test
 	public void searchProductOrderByBestSellingTest() {
 		/* given - 데이터 준비 */
+		Product product1 = Product.builder()
+			.productName("아이폰11")
+			.price(500000L)
+			.img("http....")
+			.stock(10)
+			.sales(50)
+			.onSale(true)
+			.build();
+		Product product2 = Product.builder()
+			.productName("아이폰12")
+			.price(1000000L)
+			.img("http....")
+			.stock(15)
+			.sales(100)
+			.onSale(true)
+			.build();
+		Product product3 = Product.builder()
+			.productName("아이폰13")
+			.price(1200000L)
+			.img("http....")
+			.stock(10)
+			.sales(75)
+			.onSale(true)
+			.build();
+
+		productRepository.save(product1);
+		productRepository.save(product2);
+		productRepository.save(product3);
 
 		/* when - 테스트 실행 */
 		HttpEntity<String> request = new HttpEntity<>(null, headers);
