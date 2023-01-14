@@ -51,11 +51,11 @@ public class MemberServiceTest {
         when(memberRepository.save(any())).thenReturn(memberCreateReq.toEntity());
 
         /* when - 테스트 실행 */
-        MemberResp memberResp = memberService.signup(memberCreateReq);
+        Member member = memberService.signup(memberCreateReq);
 
         /* then - 검증 */
-        assertThat(memberResp.getEmail()).isEqualTo(memberCreateReq.getEmail());
-        assertThat(memberResp.getAddress()).isEqualTo(memberCreateReq.getAddress());
+        assertThat(member.getEmail()).isEqualTo(memberCreateReq.getEmail());
+        assertThat(member.getAddress()).isEqualTo(memberCreateReq.getAddress());
     }
 
     @Test
