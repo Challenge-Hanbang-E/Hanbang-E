@@ -23,7 +23,7 @@ public class MemberService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public MemberResp signup(MemberCreateReq memberCreateReq) {
+    public Member signup(MemberCreateReq memberCreateReq) {
         memberRepository.findByEmail(memberCreateReq.getEmail())
                 .ifPresent(m -> {
                     throw new IllegalArgumentException("중복된 이메일이 존재합니다.");
@@ -31,7 +31,7 @@ public class MemberService {
 
         Member member = memberCreateReq.toEntity();
         memberRepository.save(member);
-        return MemberResp.from(member);
+        return member;
     }
 
     @Transactional(readOnly = true)

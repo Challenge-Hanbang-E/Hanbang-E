@@ -3,6 +3,8 @@ package com.hanbang.e.member.controller;
 import com.hanbang.e.common.dto.ResponseDto;
 import com.hanbang.e.member.dto.MemberCreateReq;
 import com.hanbang.e.member.dto.MemberLoginReq;
+import com.hanbang.e.member.dto.MemberResp;
+import com.hanbang.e.member.entity.Member;
 import com.hanbang.e.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +28,8 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody @Valid MemberCreateReq memberCreateReq) {
-        memberService.signup(memberCreateReq);
+        Member member = memberService.signup(memberCreateReq);
+        MemberResp.from(member);
         return new ResponseEntity<>(new ResponseDto<>("success", "회원가입 완료", null), HttpStatus.OK);
     }
 
