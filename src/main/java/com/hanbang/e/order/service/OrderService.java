@@ -18,6 +18,8 @@ import com.hanbang.e.order.repository.OrderRepository;
 import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.repository.ProductRepository;
 
+import static com.hanbang.e.common.exception.ExceptionMessage.*;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -30,23 +32,23 @@ public class OrderService {
 	public ResponseDto<?> insertOrder(Long memberId, Long productId, OrderReq orderReq) {
 
 		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+			.orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_MEMBER_MSG.getMsg()));
 
 		Product product = productRepository.findById(productId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+			.orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_PRODUCT_MSG.getMsg()));
 
 		if (!product.getOnSale()) {
-			throw new IllegalArgumentException("현재 판매하는 상품이 아닙니다.");
+			throw new IllegalArgumentException(NOT_SELL_PRODUCT_MSG.getMsg());
 		}
 
 		if (product.getStock() == 0) {
-			throw new IllegalArgumentException("현재 재고가 없는 상품입니다.");
+			throw new IllegalArgumentException(PRODUCT_OUTOF_STOCK_MSG.getMsg());
 		}
 
 		int orderQuantity = orderReq.getQuantity();
 
 		if (product.getStock() - orderQuantity < 0) {
-			throw new IllegalArgumentException(String.format("현재 남은 재고는 %d개 입니다.", product.getStock()));
+			throw new IllegalArgumentException(String.format(BE_IN_STOCK_CHECK_MSG.getMsg(), product.getStock()));
 		}
 
 		product.sell(orderQuantity);
@@ -61,7 +63,7 @@ public class OrderService {
 	public ResponseDto<List<OrderResp>> findMyOrderList(Long memberId) {
 
 		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+			.orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_MEMBER_MSG.getMsg()));
 
 		List<Orders> orderList = orderRepository.findOrdersByMemberOrderByCreatedAtDesc(member);
 
@@ -81,10 +83,10 @@ public class OrderService {
 	public void deleteOrder(Long memberId, Long orderId) {
 
 		Orders orders = orderRepository.findById(orderId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
+			.orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_ORDER_MSG.getMsg()));
 
 		if (!orders.getMember().getMemberId().equals(memberId)) {
-			throw new IllegalArgumentException("주문 삭제 권한이 없습니다.");
+			throw new IllegalArgumentException(NOT_HAVE_PERMISSION_DELETE_MSG.getMsg());
 		}
 
 		Product cancledProduct = orders.getProduct();
