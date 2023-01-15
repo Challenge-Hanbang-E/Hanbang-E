@@ -1,15 +1,11 @@
 package com.hanbang.e.product.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hanbang.e.product.dto.ProductDetailResp;
-import com.hanbang.e.product.dto.ProductListResp;
-import com.hanbang.e.product.dto.ProductSimpleResp;
 import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.repository.ProductRepository;
 
@@ -37,12 +33,12 @@ public class ProductService {
 	}
 
 	@Transactional(readOnly = true)
-	public ProductDetailResp getProductDetails(Long productId) {
+	public Product getProductDetails(Long productId) {
 
-		Product selectedProduct = productRepository.findById(productId).orElseThrow(
-			() -> new IllegalArgumentException("해당 상품은 존재하지 않습니다.")
+		Product selectedProduct = productRepository.findById(productId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 상품은 존재하지 않습니다.")
 		);
 
-		return ProductDetailResp.from(selectedProduct);
+		return selectedProduct;
 	}
 }

@@ -13,6 +13,7 @@ import com.hanbang.e.common.dto.ResponseDto;
 import com.hanbang.e.product.dto.ProductDetailResp;
 import com.hanbang.e.product.dto.ProductListResp;
 import com.hanbang.e.product.dto.ProductSimpleResp;
+import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,9 @@ public class ProductController {
 	@GetMapping("/details/{productId}")
 	public ResponseEntity getProductDetails(@PathVariable("productId") Long productId) {
 
-		ProductDetailResp response = productService.getProductDetails(productId);
+		Product data = productService.getProductDetails(productId);
+		ProductDetailResp response = ProductDetailResp.from(data);
+
 		return new ResponseEntity(new ResponseDto("success", "상세 조회 성공", response), HttpStatus.OK);
 	}
 

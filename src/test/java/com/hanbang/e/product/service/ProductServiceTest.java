@@ -1,7 +1,7 @@
 package com.hanbang.e.product.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import com.hanbang.e.product.dto.ProductDetailResp;
 import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.repository.ProductRepository;
 
@@ -184,9 +183,9 @@ class ProductServiceTest {
 		when(productRepository.findById(id)).thenReturn(productOP);
 
 		/* when - 테스트 실행 */
-		ProductDetailResp result = productService.getProductDetails(id);
+		Product result = productService.getProductDetails(id);
 
 		/* then - 검증 */
-		assertThat(result.getName()).isEqualTo("아이폰11");
+		assertThat(result.getProductName()).isEqualTo("아이폰11");
 	}
 }
