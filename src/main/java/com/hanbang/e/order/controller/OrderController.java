@@ -11,6 +11,7 @@ import com.hanbang.e.common.dto.ResponseDto;
 import com.hanbang.e.common.jwt.JwtUtil;
 import com.hanbang.e.order.dto.OrderReq;
 import com.hanbang.e.order.dto.OrderResp;
+import com.hanbang.e.order.entity.Orders;
 import com.hanbang.e.order.service.OrderService;
 
 import lombok.RequiredArgsConstructor;
@@ -38,14 +39,15 @@ public class OrderController {
 	@PostMapping("")
 	public ResponseEntity<ResponseDto<?>> doOrder(@RequestParam Long productId, @Valid @RequestBody OrderReq orderReq, HttpServletRequest request) {
 		Long memberId = jwtUtil.getMemberIdFromToken(request);
-		ResponseDto<?> response = orderService.insertOrder(memberId, productId, orderReq);
+		ResponseDto<?> response = new ResponseDto<>("success", "주문 성공", null);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/list")
 	public ResponseEntity<ResponseDto<List<OrderResp>>> getMyOrderList(HttpServletRequest request) {
 		Long memberId = jwtUtil.getMemberIdFromToken(request);
-		ResponseDto<List<OrderResp>> response = orderService.findMyOrderList(memberId);
+		List<OrderResp> orderRespList = orderService.findMyOrderList(memberId);
+		ResponseDto response = new ResponseDto<>("success", "주문 조회 성공", orderRespList);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 

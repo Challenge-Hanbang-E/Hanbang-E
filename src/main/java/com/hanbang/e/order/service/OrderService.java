@@ -27,7 +27,7 @@ public class OrderService {
 	private final ProductRepository productRepository;
 
 	@Transactional
-	public ResponseDto<?> insertOrder(Long memberId, Long productId, OrderReq orderReq) {
+	public void insertOrder(Long memberId, Long productId, OrderReq orderReq) {
 
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
@@ -53,12 +53,10 @@ public class OrderService {
 
 		Orders order = orderReq.toEntity(member, product, orderQuantity);
 		orderRepository.save(order);
-
-		return new ResponseDto<>("success", "주문 성공", null);
 	}
 
 	@Transactional(readOnly = true)
-	public ResponseDto<List<OrderResp>> findMyOrderList(Long memberId) {
+	public List<OrderResp> findMyOrderList(Long memberId) {
 
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
@@ -74,7 +72,7 @@ public class OrderService {
 			}
 		}
 
-		return new ResponseDto<>("success", "주문 조회 성공", orderRespList);
+		return orderRespList;
 	}
   
 	@Transactional
