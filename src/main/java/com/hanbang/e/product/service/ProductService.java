@@ -1,5 +1,7 @@
 package com.hanbang.e.product.service;
 
+import static com.hanbang.e.common.exception.ExceptionMessage.NOT_EXIST_PRODUCT_MSG;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +47,7 @@ public class ProductService {
 	public ProductDetailResp getProductDetails(Long productId) {
 
 		Product selectedProduct = productRepository.findById(productId).orElseThrow(
-			() -> new IllegalArgumentException("해당 상품은 존재하지 않습니다.")
+			() -> new IllegalArgumentException(NOT_EXIST_PRODUCT_MSG.getMsg())
 		);
 
 		return ProductDetailResp.from(selectedProduct);
