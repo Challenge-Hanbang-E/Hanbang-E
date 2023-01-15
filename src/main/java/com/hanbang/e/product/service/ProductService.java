@@ -22,7 +22,7 @@ public class ProductService {
 	private final ProductRepository productRepository;
 
 	@Transactional(readOnly = true)
-	public ProductListResp searchProduct(String search, String orderby, Pageable pageable) {
+	public List<Product> searchProduct(String search, String orderby, Pageable pageable) {
 
 		List<Product> searchedProductList;
 		if (orderby.equals("pricedesc")) { // 높은 가격순 조회
@@ -33,12 +33,7 @@ public class ProductService {
 			searchedProductList = productRepository.findByProductNameContainingOrderBySalesDesc(search, pageable);
 		}
 
-		List<ProductSimpleResp> result = new ArrayList<>();
-		for (Product product : searchedProductList) {
-			result.add(ProductSimpleResp.from(product));
-		}
-
-		return new ProductListResp(result);
+		return searchedProductList;
 	}
 
 	@Transactional(readOnly = true)

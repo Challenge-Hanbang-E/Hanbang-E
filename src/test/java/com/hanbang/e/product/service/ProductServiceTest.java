@@ -1,7 +1,7 @@
 package com.hanbang.e.product.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import com.hanbang.e.product.dto.ProductDetailResp;
-import com.hanbang.e.product.dto.ProductListResp;
 import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.repository.ProductRepository;
 
@@ -68,12 +67,12 @@ class ProductServiceTest {
 		when(productRepository.findByProductNameContainingOrderByPriceDesc(search, pageable)).thenReturn(productList);
 
 		/* when - 테스트 실행 */
-		ProductListResp response = productService.searchProduct(search, orderby, pageable);
+		List<Product> response = productService.searchProduct(search, orderby, pageable);
 
 		/* then - 검증 */
-		assertThat(response.getItems().get(0).getName()).isEqualTo("아이폰13");
-		assertThat(response.getItems().get(1).getName()).isEqualTo("아이폰12");
-		assertThat(response.getItems().get(2).getName()).isEqualTo("아이폰11");
+		assertThat(response.get(0).getProductName()).isEqualTo("아이폰13");
+		assertThat(response.get(1).getProductName()).isEqualTo("아이폰12");
+		assertThat(response.get(2).getProductName()).isEqualTo("아이폰11");
 
 	}
 
@@ -114,12 +113,12 @@ class ProductServiceTest {
 		when(productRepository.findByProductNameContainingOrderByPriceAsc(search, pageable)).thenReturn(productList);
 
 		/* when - 테스트 실행 */
-		ProductListResp result = productService.searchProduct(search, orderby, pageable);
+		List<Product> result = productService.searchProduct(search, orderby, pageable);
 
 		/* then - 검증 */
-		assertThat(result.getItems().get(0).getName()).isEqualTo("아이폰11");
-		assertThat(result.getItems().get(1).getName()).isEqualTo("아이폰12");
-		assertThat(result.getItems().get(2).getName()).isEqualTo("아이폰13");
+		assertThat(result.get(0).getProductName()).isEqualTo("아이폰11");
+		assertThat(result.get(1).getProductName()).isEqualTo("아이폰12");
+		assertThat(result.get(2).getProductName()).isEqualTo("아이폰13");
 	}
 
 	@DisplayName("상품 검색하기, 높은 가격순 조회")
@@ -159,12 +158,12 @@ class ProductServiceTest {
 		when(productRepository.findByProductNameContainingOrderBySalesDesc(search, pageable)).thenReturn(productList);
 
 		/* when - 테스트 실행 */
-		ProductListResp result = productService.searchProduct(search, orderby, pageable);
+		List<Product> result = productService.searchProduct(search, orderby, pageable);
 
 		/* then - 검증 */
-		assertThat(result.getItems().get(0).getName()).isEqualTo("아이폰12");
-		assertThat(result.getItems().get(1).getName()).isEqualTo("아이폰13");
-		assertThat(result.getItems().get(2).getName()).isEqualTo("아이폰11");
+		assertThat(result.get(0).getProductName()).isEqualTo("아이폰12");
+		assertThat(result.get(1).getProductName()).isEqualTo("아이폰13");
+		assertThat(result.get(2).getProductName()).isEqualTo("아이폰11");
 	}
 
 	@DisplayName("상품 상세 조회")
