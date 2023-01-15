@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 
+import static com.hanbang.e.common.exception.ExceptionMessage.*;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -26,7 +28,7 @@ public class MemberService {
     public MemberResp signup(MemberCreateReq memberCreateReq) {
         memberRepository.findByEmail(memberCreateReq.getEmail())
                 .ifPresent(m -> {
-                    throw new IllegalArgumentException("중복된 이메일이 존재합니다.");
+                    throw new IllegalArgumentException(OVERLAP_EMAIL_MSG.getMsg());
                 });
 
         Member member = memberCreateReq.toEntity();
@@ -37,10 +39,10 @@ public class MemberService {
     @Transactional(readOnly = true)
     public void login(MemberLoginReq memberLoginReq, HttpServletResponse httpServletResponse) {
         Member member = memberRepository.findByEmail(memberLoginReq.getEmail()).orElseThrow(
-                () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
+                () -> new IllegalArgumentException(NOT_FOUND_MEMBER_MSG.getMsg())
         );
         if (!member.getPassword().equals(memberLoginReq.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException(NOT_MATCH_PASSWORD_MSG.getMsg());
         }
         httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(member.getMemberId()));
     }
