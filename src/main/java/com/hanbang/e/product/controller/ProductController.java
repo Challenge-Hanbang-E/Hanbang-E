@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hanbang.e.common.dto.ResponseDto;
 import com.hanbang.e.product.dto.ProductDetailResp;
 import com.hanbang.e.product.dto.ProductListResp;
+import com.hanbang.e.product.dto.ProductSimpleResp;
+import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,18 +26,24 @@ public class ProductController {
 	private final ProductService productService;
 
 	@GetMapping("/list")
-	public ResponseEntity searchProduct(@RequestParam("search") String search, @RequestParam("orderby") String orderby,
+	public ResponseEntity<?> searchProduct(@RequestParam("search") String search,
+		@RequestParam("orderby") String orderby,
 		Pageable pageable) {
 
-		ProductListResp response = productService.searchProduct(search, orderby, pageable);
-		return new ResponseEntity(new ResponseDto("success", " 성공", response), HttpStatus.OK);
+		var data = productService.searchProduct(search, orderby, pageable).stream()
+			.map(ProductSimpleResp::from)
+			.toList();
+		ProductListResp response = new ProductListResp(data);
+
+		return new ResponseEntity<>(new ResponseDto<>("success", " 성공", response), HttpStatus.OK);
 	}
 
 	@GetMapping("/details/{productId}")
-	public ResponseEntity getProductDetails(@PathVariable("productId") Long productId) {
+	public ResponseEntity<?> getProductDetails(@PathVariable("productId") Long productId) {
+		Product data = productService.getProductDetails(productId);
+		ProductDetailResp response = ProductDetailResp.from(data);
 
-		ProductDetailResp response = productService.getProductDetails(productId);
-		return new ResponseEntity(new ResponseDto("success", "상세 조회 성공", response), HttpStatus.OK);
+		return new ResponseEntity<>(new ResponseDto<>("success", "상세 조회 성공", response), HttpStatus.OK);
 	}
 
 }
