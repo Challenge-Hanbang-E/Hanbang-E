@@ -31,7 +31,6 @@ public class MemberService {
 
         Member member = memberCreateReq.toEntity();
         memberRepository.save(member);
-        MemberResp.from(member);
     }
 
     @Transactional(readOnly = true)
