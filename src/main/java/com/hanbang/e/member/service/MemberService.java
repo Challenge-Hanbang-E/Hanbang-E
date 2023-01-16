@@ -25,7 +25,7 @@ public class MemberService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public MemberResp signup(MemberCreateReq memberCreateReq) {
+    public void signup(MemberCreateReq memberCreateReq) {
         memberRepository.findByEmail(memberCreateReq.getEmail())
                 .ifPresent(m -> {
                     throw new IllegalArgumentException(OVERLAP_EMAIL_MSG.getMsg());
@@ -33,7 +33,6 @@ public class MemberService {
 
         Member member = memberCreateReq.toEntity();
         memberRepository.save(member);
-        return MemberResp.from(member);
     }
 
     @Transactional(readOnly = true)
