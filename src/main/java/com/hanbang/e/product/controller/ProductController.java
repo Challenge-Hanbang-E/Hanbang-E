@@ -39,12 +39,11 @@ public class ProductController {
 	}
 
 	@GetMapping("/details/{productId}")
-	public ResponseEntity getProductDetails(@PathVariable("productId") Long productId) {
-
+	public ResponseEntity<?> getProductDetails(@PathVariable("productId") Long productId) {
 		Product data = productService.getProductDetails(productId);
 		ProductDetailResp response = ProductDetailResp.from(data);
 
-		return new ResponseEntity(new ResponseDto("success", "상세 조회 성공", response), HttpStatus.OK);
+		return new ResponseEntity<>(new ResponseDto<>("success", "상세 조회 성공", response), HttpStatus.OK);
 	}
 
 }
