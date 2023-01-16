@@ -28,8 +28,7 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody @Valid MemberCreateReq memberCreateReq) {
-        Member member = memberService.signup(memberCreateReq);
-        MemberResp.from(member);
+        memberService.signup(memberCreateReq);
         return new ResponseEntity<>(new ResponseDto<>("success", "회원가입 완료", null), HttpStatus.OK);
     }
 
