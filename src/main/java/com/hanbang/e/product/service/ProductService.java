@@ -1,5 +1,8 @@
 package com.hanbang.e.product.service;
 
+import static com.hanbang.e.common.exception.ExceptionMessage.NOT_EXIST_PRODUCT_MSG;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -19,7 +22,6 @@ public class ProductService {
 
 	@Transactional(readOnly = true)
 	public List<Product> searchProduct(String search, String orderby, Pageable pageable) {
-
 		List<Product> searchedProductList;
 		if (orderby.equals("pricedesc")) { // 높은 가격순 조회
 			searchedProductList = productRepository.findByProductNameContainingOrderByPriceDesc(search, pageable);
@@ -34,10 +36,8 @@ public class ProductService {
 
 	@Transactional(readOnly = true)
 	public Product getProductDetails(Long productId) {
-
 		Product selectedProduct = productRepository.findById(productId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 상품은 존재하지 않습니다.")
-		);
+			.orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_PRODUCT_MSG.getMsg()));
 
 		return selectedProduct;
 	}
