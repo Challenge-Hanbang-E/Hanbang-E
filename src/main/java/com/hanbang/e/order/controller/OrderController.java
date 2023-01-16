@@ -1,9 +1,7 @@
 package com.hanbang.e.order.controller;
 
-
 import java.util.List;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -11,7 +9,6 @@ import com.hanbang.e.common.dto.ResponseDto;
 import com.hanbang.e.common.jwt.JwtUtil;
 import com.hanbang.e.order.dto.OrderReq;
 import com.hanbang.e.order.dto.OrderResp;
-import com.hanbang.e.order.entity.Orders;
 import com.hanbang.e.order.service.OrderService;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -3,8 +3,6 @@ package com.hanbang.e.member.controller;
 import com.hanbang.e.common.dto.ResponseDto;
 import com.hanbang.e.member.dto.MemberCreateReq;
 import com.hanbang.e.member.dto.MemberLoginReq;
-import com.hanbang.e.member.dto.MemberResp;
-import com.hanbang.e.member.entity.Member;
 import com.hanbang.e.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
