@@ -43,6 +43,17 @@ jobs:
           OCCUPY_SECRET1_DIR_FILE_NAME: application-dev.properties
         run: echo $OCCUPY_SECRET1 | base64 --decode > $OCCUPY_SECRET1_DIR/$OCCUPY_SECRET1_DIR_FILE_NAME
 
+      # gradle 캐싱
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       # gradle 빌드 권한 설정
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
