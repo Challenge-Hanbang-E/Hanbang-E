@@ -3,7 +3,6 @@ package com.hanbang.e.member.service;
 import com.hanbang.e.common.jwt.JwtUtil;
 import com.hanbang.e.member.dto.MemberCreateReq;
 import com.hanbang.e.member.dto.MemberLoginReq;
-import com.hanbang.e.member.dto.MemberResp;
 import com.hanbang.e.member.entity.Member;
 import com.hanbang.e.member.repository.MemberRepository;
 

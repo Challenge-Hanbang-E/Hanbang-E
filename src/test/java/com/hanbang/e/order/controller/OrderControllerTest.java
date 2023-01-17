@@ -22,8 +22,6 @@ import com.hanbang.e.member.repository.MemberRepository;
 import com.hanbang.e.order.entity.Orders;
 import com.hanbang.e.order.repository.OrderRepository;
 import com.hanbang.e.order.dto.OrderReq;
-import com.hanbang.e.order.entity.Orders;
-import com.hanbang.e.order.repository.OrderRepository;
 import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.repository.ProductRepository;
 import com.jayway.jsonpath.DocumentContext;
