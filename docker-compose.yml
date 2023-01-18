@@ -1,0 +1,8 @@
+version: "3.9"
+
+services:
+  spring:
+    container_name: hanbange_app
+    image: yanjuicy/hanbange:latest
+    ports:
+      - "80:8080"
