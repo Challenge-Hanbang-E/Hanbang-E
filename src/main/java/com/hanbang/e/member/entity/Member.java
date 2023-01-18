@@ -18,13 +18,13 @@ public class Member {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long memberId;
 
-	@Column(nullable = false, length = 40)
+	@Column(nullable = false)
 	private String email;
 
 	@Column(nullable = false)
 	private String password;
 
-	@Column(nullable = false, length = 60)
+	@Column(nullable = false)
 	private String address;
 
 	@Builder

@@ -19,20 +19,20 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long productId;
 
-	@Column(nullable = false, name = "NAME", length = 150)
+	@Column(nullable = false, name = "NAME")
 	private String productName;
 
 	@Column(nullable = false)
 	private Long price;
 
-	@Column(nullable = false, length = 200)
+	@Column(nullable = false)
 	private String img;
 
 	@Column(nullable = false)
-	private Integer stock;
+	private int stock;
 
 	@Column(nullable = false)
-	private Integer sales;
+	private int sales;
 
 	@Column(nullable = false)
 	private Boolean onSale;
