@@ -36,7 +36,7 @@ public class OrderRedissonLockFacadeTest {
     private MemberRepository memberRepository;
 
     @Test
-    public void 동시에_100개의요청() throws InterruptedException {
+    public void 주문생성_동시에_100개의요청() throws InterruptedException {
 
         /* 상품 정보 생성 */
         Product product = new Product("맥북프로", 1000000L, "img", 100, 0, true);
@@ -73,6 +73,50 @@ public class OrderRedissonLockFacadeTest {
 
         // 100 - (100 * 1) = 0
         assertEquals(0, product2.getStock());
+
+    }
+
+    @Test
+    public void 주문취소_동시에_100개의요청() throws InterruptedException {
+
+        /* 상품 정보 생성 */
+        Product product = new Product("맥북프로", 1000000L, "img", 0, 0, true);
+        productRepository.saveAndFlush(product);
+
+        /* 회원 정보 생성 */
+        Member member = new Member("yj0718@gmail.com", "dPwls12!", "address");
+        memberRepository.saveAndFlush(member);
+
+        /* 주문 정보 생성 */
+        for(int i=0; i<100; i++){
+            Orders orders = new Orders("제주도", 1, 1000000L, member, product);
+            orderRepository.saveAndFlush(orders);
+        }
+
+        int threadCount = 100;
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        Long key = 1L;
+        Long memberId = 1L;
+        Long orderId = 0L;
+        for(Long i=0L; i<threadCount; i++){
+            orderId++;
+            Long finalOrderId = orderId;
+            executorService.submit(() -> {
+                try {
+                    System.out.println(finalOrderId);
+                    orderRedissonLockFacade.deleteOrder(key, memberId, finalOrderId);
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        latch.await();
+        Product product2 = productRepository.findById(1L).orElseThrow();
+
+        assertEquals(100, product2.getStock());
 
     }
 
