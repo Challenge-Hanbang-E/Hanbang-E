@@ -38,6 +38,24 @@ public class OrderRedissonLockFacade {
         }
     }
 
+    public void deleteOrder(Long key, Long memberId, Long orderId){
+        String deleteKey = String.valueOf(0+key);
+        RLock lock = redissonClient.getLock(deleteKey);
+
+        try {
+            boolean available = lock.tryLock(10, 1, TimeUnit.SECONDS);
+
+            if(!available) {
+                return;
+            }
+            orderService.deleteOrder(memberId, orderId);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.unlock();
+        }
+
+    }
 
 }
 
