@@ -1,10 +1,9 @@
 package com.hanbang.e.product.service;
 
-import static com.hanbang.e.common.exception.ExceptionMessage.NOT_EXIST_PRODUCT_MSG;
+import static com.hanbang.e.common.exception.ExceptionMessage.*;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +44,13 @@ public class ProductService {
 
 	@Transactional
 	public List<ProductSimpleResp> searchProductQuerydsl(String keyword, Pageable pageable){
-		Page<ProductSimpleResp> result = productRepository.searchPageFilter(keyword, pageable);
-		return result.getContent();
+		List<ProductSimpleResp> result = productRepository.searchPageFilter(keyword, pageable);
+		return result;
+	}
+
+	@Transactional
+	public List<Product> searchProductEntityQuerydsl(String keyword, Pageable pageable){
+		List<Product> result = productRepository.searchProductPageFilter(keyword, pageable);
+		return result;
 	}
 }

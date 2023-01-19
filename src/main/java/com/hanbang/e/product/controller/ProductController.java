@@ -2,8 +2,6 @@ package com.hanbang.e.product.controller;
 
 import java.util.List;
 
-import org.apache.catalina.LifecycleState;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,5 +54,16 @@ public class ProductController {
 		List<ProductSimpleResp> response = productService.searchProductQuerydsl(search, pageable);
 
 		return new ResponseEntity<>(new ResponseDto<>("success", "검색 성공", response), HttpStatus.OK);
+	}
+
+	@GetMapping("/list/querydsl/entity")
+	public ResponseEntity<?> searchProductEntityQuerydsl(@RequestParam("search") String search, Pageable pageable) {
+
+		List<Product> response = productService.searchProductEntityQuerydsl(search, pageable);
+		var data = response.stream()
+			.map(ProductSimpleResp::from)
+			.toList();
+
+		return new ResponseEntity<>(new ResponseDto<>("success", "검색 성공", data), HttpStatus.OK);
 	}
 }

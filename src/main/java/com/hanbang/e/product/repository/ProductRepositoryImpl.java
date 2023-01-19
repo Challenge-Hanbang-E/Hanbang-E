@@ -7,13 +7,11 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.hanbang.e.product.dto.ProductSimpleResp;
-
+import com.hanbang.e.product.entity.Product;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -29,7 +27,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 	}
 
 	@Override
-	public Page<ProductSimpleResp> searchPageFilter(String keyword, Pageable pageable) {
+	public List<ProductSimpleResp> searchPageFilter(String keyword, Pageable pageable) {
 
 		List<ProductSimpleResp> results = queryFactory
 			.select(Projections.constructor(ProductSimpleResp.class,
@@ -44,12 +42,21 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 			.orderBy(productSort(pageable))
 			.fetch();
 
-		long total = queryFactory
-			.selectFrom(product)
-			.where(keywordEq(keyword))
-			.fetch().size();
+		return results;
+	}
 
-		return new PageImpl<>(results, pageable, total);
+	@Override
+	public List<Product> searchProductPageFilter(String keyword, Pageable pageable) {
+		List<Product> results = queryFactory
+			.select(product)
+			.from(product)
+			.where(keywordEq(keyword))
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.orderBy(productSort(pageable))
+			.fetch();
+
+		return results;
 	}
 
 	private OrderSpecifier<?> productSort(Pageable pageable) {
