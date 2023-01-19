@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.hanbang.e.product.dto.ProductSimpleResp;
-import com.hanbang.e.product.entity.Product;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -35,20 +34,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 				product.productName,
 				product.price,
 				product.img))
-			.from(product)
-			.where(keywordEq(keyword))
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
-			.orderBy(productSort(pageable))
-			.fetch();
-
-		return results;
-	}
-
-	@Override
-	public List<Product> searchProductPageFilter(String keyword, Pageable pageable) {
-		List<Product> results = queryFactory
-			.select(product)
 			.from(product)
 			.where(keywordEq(keyword))
 			.offset(pageable.getOffset())
