@@ -122,7 +122,7 @@ class ProductRepositoryTest {
 		List<ProductSimpleResp> productList = productRepository.searchPageFilter(search, pageable);
 
 		/* then - 검증 */
-		assertThat(productList.get(1).getName()).isEqualTo("아이폰12");
+		assertThat(productList.get(0).getName()).isEqualTo("아이폰12");
 		assertThat(productList.get(1).getName()).isEqualTo("아이폰14");
 		assertThat(productList.get(2).getName()).isEqualTo("아이폰13");
 
