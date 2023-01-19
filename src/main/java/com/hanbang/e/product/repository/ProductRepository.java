@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.hanbang.e.product.entity.Product;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
 	List<Product> findByProductNameContainingOrderByPriceDesc(String productName, Pageable pageable);
 
 	List<Product> findByProductNameContainingOrderByPriceAsc(String productName, Pageable pageable);
