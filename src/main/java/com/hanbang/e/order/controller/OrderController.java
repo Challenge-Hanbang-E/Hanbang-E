@@ -9,6 +9,7 @@ import com.hanbang.e.common.dto.ResponseDto;
 import com.hanbang.e.common.jwt.JwtUtil;
 import com.hanbang.e.order.dto.OrderReq;
 import com.hanbang.e.order.dto.OrderResp;
+import com.hanbang.e.order.facade.OrderRedissonLockFacade;
 import com.hanbang.e.order.service.OrderService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,11 +31,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
 	private final OrderService orderService;
+
+	private final OrderRedissonLockFacade orderRedissonLockFacade;
+
 	private final JwtUtil jwtUtil;
 
 	@PostMapping("")
 	public ResponseEntity<ResponseDto<?>> doOrder(@RequestParam Long productId, @Valid @RequestBody OrderReq orderReq, HttpServletRequest request) {
+		Long key = productId;
 		Long memberId = jwtUtil.getMemberIdFromToken(request);
+		orderRedissonLockFacade.insertOrder(key, memberId, productId, orderReq);
 		ResponseDto<?> response = new ResponseDto<>("success", "주문 성공", null);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
@@ -49,8 +55,9 @@ public class OrderController {
 
 	@DeleteMapping("")
 	public ResponseEntity<?> deleteOrder(@RequestParam Long orderId, HttpServletRequest request) {
+		Long key = orderId;
 		Long memberId = jwtUtil.getMemberIdFromToken(request);
-		orderService.deleteOrder(memberId, orderId);
+		orderRedissonLockFacade.deleteOrder(key, memberId, orderId);
 		return new ResponseEntity<>(new ResponseDto("success", "주문 삭제 성공", null), HttpStatus.OK);
 	}
 
