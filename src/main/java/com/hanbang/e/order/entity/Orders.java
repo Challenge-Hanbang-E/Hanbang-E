@@ -35,11 +35,11 @@ public class Orders {
 	@Column(nullable = false)
 	private LocalDateTime createdAt;
 
-	@Column(nullable = false, length = 50)
+	@Column(nullable = false, length = 60)
 	private String destination;
 
 	@Column(nullable = false)
-	private int quantity;
+	private Integer quantity;
 
 	@Column(nullable = false)
 	private Long productPrice;

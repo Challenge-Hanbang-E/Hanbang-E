@@ -4,10 +4,12 @@ import static com.hanbang.e.common.exception.ExceptionMessage.NOT_EXIST_PRODUCT_
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hanbang.e.product.dto.ProductSimpleResp;
 import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.repository.ProductRepository;
 
@@ -39,5 +41,11 @@ public class ProductService {
 			.orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_PRODUCT_MSG.getMsg()));
 
 		return selectedProduct;
+	}
+
+	@Transactional
+	public List<ProductSimpleResp> searchProductQuerydsl(String keyword, Pageable pageable){
+		Page<ProductSimpleResp> result = productRepository.searchPageFilter(keyword, pageable);
+		return result.getContent();
 	}
 }
