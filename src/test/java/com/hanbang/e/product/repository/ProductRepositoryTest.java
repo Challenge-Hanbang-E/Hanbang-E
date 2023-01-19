@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
+import com.hanbang.e.product.dto.ProductSimpleResp;
 import com.hanbang.e.product.entity.Product;
 
 @Sql("classpath:db/productDomainTableInit.sql")
@@ -49,10 +51,19 @@ class ProductRepositoryTest {
 			.sales(75)
 			.onSale(true)
 			.build();
+		Product product4 = Product.builder()
+			.productName("아이폰14")
+			.price(1500000L)
+			.img("http....")
+			.stock(5)
+			.sales(80)
+			.onSale(true)
+			.build();
 
 		productRepository.save(product1);
 		productRepository.save(product2);
 		productRepository.save(product3);
+		productRepository.save(product4);
 	}
 
 	@AfterEach
@@ -66,13 +77,17 @@ class ProductRepositoryTest {
 
 		/* given - 데이터 준비 */
 		String search = "아이";
-		Pageable pageable = PageRequest.of(0, 5);
+		Sort property = Sort.by(Sort.Direction.DESC, "price");
+		Pageable pageable = PageRequest.of(0, 5, property);
 
 		/* when - 테스트 실행 */
-		List<Product> productList = productRepository.findByProductNameContainingOrderByPriceDesc(search, pageable);
+		List<ProductSimpleResp> productList = productRepository.searchPageFilter(search, pageable);
 
 		/* then - 검증 */
-		assertThat(productList.get(0).getProductName()).isEqualTo("아이폰13");
+		assertThat(productList.get(0).getPrice()).isEqualTo(1500000L);
+		assertThat(productList.get(1).getPrice()).isEqualTo(1200000L);
+		assertThat(productList.get(2).getPrice()).isEqualTo(1000000L);
+
 	}
 
 	@DisplayName("검색결과 낮은 가격순 조회")
@@ -81,13 +96,17 @@ class ProductRepositoryTest {
 
 		/* given - 데이터 준비 */
 		String search = "아이";
-		Pageable pageable = PageRequest.of(0, 5);
+		Sort property = Sort.by(Sort.Direction.ASC, "price");
+		Pageable pageable = PageRequest.of(0, 5, property);
 
 		/* when - 테스트 실행 */
-		List<Product> productList = productRepository.findByProductNameContainingOrderByPriceAsc(search, pageable);
+		List<ProductSimpleResp> productList = productRepository.searchPageFilter(search, pageable);
 
 		/* then - 검증 */
-		assertThat(productList.get(0).getProductName()).isEqualTo("아이폰11");
+		assertThat(productList.get(0).getPrice()).isEqualTo(500000L);
+		assertThat(productList.get(1).getPrice()).isEqualTo(1000000L);
+		assertThat(productList.get(2).getPrice()).isEqualTo(1200000L);
+
 	}
 
 	@DisplayName("검색결과 판매량순 조회")
@@ -96,13 +115,17 @@ class ProductRepositoryTest {
 
 		/* given - 데이터 준비 */
 		String search = "아이";
-		Pageable pageable = PageRequest.of(0, 5);
+		Sort property = Sort.by(Sort.Direction.DESC, "sales");
+		Pageable pageable = PageRequest.of(0, 5, property);
 
 		/* when - 테스트 실행 */
-		List<Product> productList = productRepository.findByProductNameContainingOrderBySalesDesc(search, pageable);
+		List<ProductSimpleResp> productList = productRepository.searchPageFilter(search, pageable);
 
 		/* then - 검증 */
-		assertThat(productList.get(0).getProductName()).isEqualTo("아이폰12");
+		assertThat(productList.get(1).getName()).isEqualTo("아이폰12");
+		assertThat(productList.get(1).getName()).isEqualTo("아이폰14");
+		assertThat(productList.get(2).getName()).isEqualTo("아이폰13");
+
 	}
 
 	@DisplayName("검색결과 판매량순 조회 페이징 작동 확인")
@@ -111,12 +134,16 @@ class ProductRepositoryTest {
 
 		/* given - 데이터 준비 */
 		String search = "아이";
-		Pageable pageable = PageRequest.of(1, 2);
+		Sort property = Sort.by(Sort.Direction.DESC, "sales");
+		Pageable pageable = PageRequest.of(0, 2, property);
 
 		/* when - 테스트 실행 */
-		List<Product> productList = productRepository.findByProductNameContainingOrderBySalesDesc(search, pageable);
+		List<ProductSimpleResp> productList = productRepository.searchPageFilter(search, pageable);
 
 		/* then - 검증 */
-		assertThat(productList.get(0).getProductName()).isEqualTo("아이폰11");
+		assertThat(productList.size()).isEqualTo(2);
+		assertThat(productList.get(0).getName()).isEqualTo("아이폰12");
+		assertThat(productList.get(1).getName()).isEqualTo("아이폰14");
+
 	}
 }
