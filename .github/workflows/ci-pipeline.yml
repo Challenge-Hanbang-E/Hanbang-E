@@ -42,6 +42,10 @@ jobs:
           OCCUPY_SECRET1_DIR_FILE_NAME: application-dev.properties
         run: echo $OCCUPY_SECRET1 | base64 --decode > $OCCUPY_SECRET1_DIR/$OCCUPY_SECRET1_DIR_FILE_NAME
 
+      # 도커 환경 init
+      - name: Env Set Using Docker
+        run: docker-compose up -d
+
       # gradle 캐싱
       - name: Gradle Caching
         uses: actions/cache@v3
