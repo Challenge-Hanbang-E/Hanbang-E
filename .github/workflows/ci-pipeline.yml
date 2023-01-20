@@ -44,7 +44,7 @@ jobs:
 
       # 도커 환경 init
       - name: Env Set Using Docker
-        run: docker-compose up -d
+        run: docker-compose -f docker-compose.redis.yml up -d
 
       # gradle 캐싱
       - name: Gradle Caching
