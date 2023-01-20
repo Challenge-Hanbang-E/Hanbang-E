@@ -32,15 +32,12 @@ public class OrderController {
 
 	private final OrderService orderService;
 
-	private final OrderRedissonLockFacade orderRedissonLockFacade;
-
 	private final JwtUtil jwtUtil;
 
 	@PostMapping("")
 	public ResponseEntity<ResponseDto<?>> doOrder(@RequestParam Long productId, @Valid @RequestBody OrderReq orderReq, HttpServletRequest request) {
-		Long key = productId;
 		Long memberId = jwtUtil.getMemberIdFromToken(request);
-		orderRedissonLockFacade.insertOrder(key, memberId, productId, orderReq);
+		orderService.insertOrder(memberId, productId, orderReq);
 		ResponseDto<?> response = new ResponseDto<>("success", "주문 성공", null);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
@@ -55,9 +52,8 @@ public class OrderController {
 
 	@DeleteMapping("")
 	public ResponseEntity<?> deleteOrder(@RequestParam Long orderId, HttpServletRequest request) {
-		Long key = orderId;
 		Long memberId = jwtUtil.getMemberIdFromToken(request);
-		orderRedissonLockFacade.deleteOrder(key, memberId, orderId);
+		orderService.deleteOrder(memberId, orderId);
 		return new ResponseEntity<>(new ResponseDto("success", "주문 삭제 성공", null), HttpStatus.OK);
 	}
 

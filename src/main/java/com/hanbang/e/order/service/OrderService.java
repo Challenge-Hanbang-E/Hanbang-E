@@ -28,7 +28,7 @@ public class OrderService {
 	private final MemberRepository memberRepository;
 	private final ProductRepository productRepository;
 
-	@Transactional
+	@DistributeLock(key = "#order")
 	public void insertOrder(Long memberId, Long productId, OrderReq orderReq) {
 
 		Member member = memberRepository.findById(memberId)
@@ -77,7 +77,7 @@ public class OrderService {
 		return orderRespList;
 	}
 
-	@DistributeLock(key = "#key")
+	@DistributeLock(key = "#order")
 	public void deleteOrder(Long memberId, Long orderId) {
 
 		Orders orders = orderRepository.findById(orderId)
