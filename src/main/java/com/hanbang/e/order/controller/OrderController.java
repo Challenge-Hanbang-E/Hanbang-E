@@ -9,7 +9,6 @@ import com.hanbang.e.common.dto.ResponseDto;
 import com.hanbang.e.common.jwt.JwtUtil;
 import com.hanbang.e.order.dto.OrderReq;
 import com.hanbang.e.order.dto.OrderResp;
-import com.hanbang.e.order.facade.OrderRedissonLockFacade;
 import com.hanbang.e.order.service.OrderService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/order")
 @RequiredArgsConstructor
-public class OrderController {
+public class
+OrderController {
 
 	private final OrderService orderService;
 
