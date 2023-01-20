@@ -6,3 +6,14 @@ services:
     image: yanjuicy/hanbange:latest
     ports:
       - "80:8080"
+
+  redis_container:
+    container_name: redis_boot
+    image: redis:latest
+    ports:
+      - 6379:6379
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+    restart: always
+    command: redis-server

@@ -1,5 +1,7 @@
 package com.hanbang.e.product.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hanbang.e.common.dto.ResponseDto;
 import com.hanbang.e.product.dto.ProductDetailResp;
-import com.hanbang.e.product.dto.ProductListResp;
 import com.hanbang.e.product.dto.ProductSimpleResp;
 import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.service.ProductService;
@@ -25,19 +26,6 @@ public class ProductController {
 
 	private final ProductService productService;
 
-	@GetMapping("/list")
-	public ResponseEntity<?> searchProduct(@RequestParam("search") String search,
-		@RequestParam("orderby") String orderby,
-		Pageable pageable) {
-
-		var data = productService.searchProduct(search, orderby, pageable).stream()
-			.map(ProductSimpleResp::from)
-			.toList();
-		ProductListResp response = new ProductListResp(data);
-
-		return new ResponseEntity<>(new ResponseDto<>("success", " 성공", response), HttpStatus.OK);
-	}
-
 	@GetMapping("/details/{productId}")
 	public ResponseEntity<?> getProductDetails(@PathVariable("productId") Long productId) {
 		Product data = productService.getProductDetails(productId);
@@ -46,4 +34,10 @@ public class ProductController {
 		return new ResponseEntity<>(new ResponseDto<>("success", "상세 조회 성공", response), HttpStatus.OK);
 	}
 
+	@GetMapping("/list")
+	public ResponseEntity<?> searchProduct(@RequestParam("search") String search, Pageable pageable) {
+		List<ProductSimpleResp> response = productService.searchProduct(search, pageable);
+
+		return new ResponseEntity<>(new ResponseDto<>("success", "검색 성공", response), HttpStatus.OK);
+	}
 }
