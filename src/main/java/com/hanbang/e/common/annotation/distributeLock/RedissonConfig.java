@@ -1,4 +1,4 @@
-package com.hanbang.e.common.annotation;
+package com.hanbang.e.common.annotation.distributeLock;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;

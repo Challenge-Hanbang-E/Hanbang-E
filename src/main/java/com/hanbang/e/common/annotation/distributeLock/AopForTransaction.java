@@ -1,4 +1,4 @@
-package com.hanbang.e.common.annotation;
+package com.hanbang.e.common.annotation.distributeLock;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.stereotype.Component;

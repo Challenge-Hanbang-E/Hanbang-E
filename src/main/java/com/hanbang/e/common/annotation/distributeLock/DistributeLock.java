@@ -1,4 +1,4 @@
-package com.hanbang.e.common.annotation;
+package com.hanbang.e.common.annotation.distributeLock;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

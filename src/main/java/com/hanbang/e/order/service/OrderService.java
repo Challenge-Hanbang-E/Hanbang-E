@@ -3,7 +3,7 @@ package com.hanbang.e.order.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hanbang.e.common.annotation.DistributeLock;
+import com.hanbang.e.common.annotation.distributeLock.DistributeLock;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -77,7 +77,7 @@ public class OrderService {
 		return orderRespList;
 	}
 
-	@DistributeLock(key = "#orders")
+	@DistributeLock(key = "#key")
 	public void deleteOrder(Long memberId, Long orderId) {
 
 		Orders orders = orderRepository.findById(orderId)

@@ -1,10 +1,9 @@
-package com.hanbang.e.product.service;
+package com.hanbang.e.order.service;
 
 import com.hanbang.e.member.entity.Member;
 import com.hanbang.e.member.repository.MemberRepository;
 import com.hanbang.e.order.entity.Orders;
 import com.hanbang.e.order.repository.OrderRepository;
-import com.hanbang.e.order.service.OrderService;
 import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @DisplayName("Redisson Lock 테스트")
-public class ProductServiceDecreaseLockTest {
+public class OrderServiceDecreaseLockTest {
 
     @Autowired
     private OrderService orderService;

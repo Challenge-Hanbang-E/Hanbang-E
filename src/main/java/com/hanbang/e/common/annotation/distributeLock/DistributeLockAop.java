@@ -1,4 +1,4 @@
-package com.hanbang.e.common.annotation;
+package com.hanbang.e.common.annotation.distributeLock;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class DistributeLockAop {
     private final RedissonClient redissonClient;
     private final AopForTransaction aopForTransaction;
 
-    @Around("@annotation(com.hanbang.e.common.annotation.DistributeLock)")
+    @Around("@annotation(com.hanbang.e.common.annotation.distributeLock.DistributeLock)")
     public Object lock(final ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();

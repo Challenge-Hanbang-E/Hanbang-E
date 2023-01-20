@@ -1,4 +1,4 @@
-package com.hanbang.e.common.annotation;
+package com.hanbang.e.common.annotation.distributeLock;
 
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
