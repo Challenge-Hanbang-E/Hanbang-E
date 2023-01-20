@@ -14,7 +14,7 @@ public class ProductSimpleResp {
 	private String img;
 
 	@Builder
-	public ProductSimpleResp(Long productId, String brand, String name, Long price, String img) {
+	public ProductSimpleResp(Long productId, String name, Long price, String img) {
 		this.productId = productId;
 		this.name = name;
 		this.price = price;

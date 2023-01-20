@@ -15,7 +15,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
+import com.hanbang.e.product.dto.ProductSimpleResp;
 import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.repository.ProductRepository;
 
@@ -33,8 +35,8 @@ class ProductServiceTest {
 	void searchProductOrderByHighToLow() {
 		/* given - 데이터 준비 */
 		String search = "아이";
-		String orderby = "pricedesc";
-		Pageable pageable = PageRequest.of(0, 5);
+		Sort property = Sort.by(Sort.Direction.DESC, "sales");
+		Pageable pageable = PageRequest.of(0, 3, property);
 
 		// 가짜 객체의 행동 정의
 		List<Product> productList = new ArrayList<>();
@@ -63,15 +65,19 @@ class ProductServiceTest {
 			.onSale(true)
 			.build());
 
-		when(productRepository.findByProductNameContainingOrderByPriceDesc(search, pageable)).thenReturn(productList);
+		var data = productList.stream()
+			.map(ProductSimpleResp::from)
+			.toList();
+
+		when(productRepository.searchPageFilter(search, pageable)).thenReturn(data);
 
 		/* when - 테스트 실행 */
-		List<Product> response = productService.searchProduct(search, orderby, pageable);
+		List<ProductSimpleResp> result = productService.searchProduct(search, pageable);
 
 		/* then - 검증 */
-		assertThat(response.get(0).getProductName()).isEqualTo("아이폰13");
-		assertThat(response.get(1).getProductName()).isEqualTo("아이폰12");
-		assertThat(response.get(2).getProductName()).isEqualTo("아이폰11");
+		assertThat(result.get(0).getName()).isEqualTo("아이폰13");
+		assertThat(result.get(1).getName()).isEqualTo("아이폰12");
+		assertThat(result.get(2).getName()).isEqualTo("아이폰11");
 
 	}
 
@@ -80,8 +86,8 @@ class ProductServiceTest {
 	void searchProductOrderByLowToHigh() {
 		/* given - 데이터 준비 */
 		String search = "아이";
-		String orderby = "priceasc";
-		Pageable pageable = PageRequest.of(0, 5);
+		Sort property = Sort.by(Sort.Direction.ASC, "price");
+		Pageable pageable = PageRequest.of(0, 3, property);
 
 		// 가짜 객체의 행동 정의
 		List<Product> productList = new ArrayList<>();
@@ -109,15 +115,20 @@ class ProductServiceTest {
 			.sales(75)
 			.onSale(true)
 			.build());
-		when(productRepository.findByProductNameContainingOrderByPriceAsc(search, pageable)).thenReturn(productList);
+
+		var data = productList.stream()
+			.map(ProductSimpleResp::from)
+			.toList();
+
+		when(productRepository.searchPageFilter(search, pageable)).thenReturn(data);
 
 		/* when - 테스트 실행 */
-		List<Product> result = productService.searchProduct(search, orderby, pageable);
+		List<ProductSimpleResp> result = productService.searchProduct(search, pageable);
 
 		/* then - 검증 */
-		assertThat(result.get(0).getProductName()).isEqualTo("아이폰11");
-		assertThat(result.get(1).getProductName()).isEqualTo("아이폰12");
-		assertThat(result.get(2).getProductName()).isEqualTo("아이폰13");
+		assertThat(result.get(0).getName()).isEqualTo("아이폰11");
+		assertThat(result.get(1).getName()).isEqualTo("아이폰12");
+		assertThat(result.get(2).getName()).isEqualTo("아이폰13");
 	}
 
 	@DisplayName("상품 검색하기, 높은 가격순 조회")
@@ -125,8 +136,8 @@ class ProductServiceTest {
 	void searchProductOrderByBestSelling() {
 		/* given - 데이터 준비 */
 		String search = "아이";
-		String orderby = "popular";
-		Pageable pageable = PageRequest.of(0, 5);
+		Sort property = Sort.by(Sort.Direction.DESC, "sales");
+		Pageable pageable = PageRequest.of(0, 3, property);
 
 		// 가짜 객체의 행동 정의
 		List<Product> productList = new ArrayList<>();
@@ -154,15 +165,20 @@ class ProductServiceTest {
 			.sales(50)
 			.onSale(true)
 			.build());
-		when(productRepository.findByProductNameContainingOrderBySalesDesc(search, pageable)).thenReturn(productList);
+
+		var data = productList.stream()
+			.map(ProductSimpleResp::from)
+			.toList();
+
+		when(productRepository.searchPageFilter(search, pageable)).thenReturn(data);
 
 		/* when - 테스트 실행 */
-		List<Product> result = productService.searchProduct(search, orderby, pageable);
+		List<ProductSimpleResp> result = productService.searchProduct(search, pageable);
 
 		/* then - 검증 */
-		assertThat(result.get(0).getProductName()).isEqualTo("아이폰12");
-		assertThat(result.get(1).getProductName()).isEqualTo("아이폰13");
-		assertThat(result.get(2).getProductName()).isEqualTo("아이폰11");
+		assertThat(result.get(0).getName()).isEqualTo("아이폰12");
+		assertThat(result.get(1).getName()).isEqualTo("아이폰13");
+		assertThat(result.get(2).getName()).isEqualTo("아이폰11");
 	}
 
 	@DisplayName("상품 상세 조회")

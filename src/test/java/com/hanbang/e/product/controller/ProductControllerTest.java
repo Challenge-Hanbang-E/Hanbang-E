@@ -104,16 +104,16 @@ class ProductControllerTest {
 
 		/* when - 테스트 실행 */
 		HttpEntity<String> request = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = rt.exchange("/api/product/list?search=아이&orderby=priceasc&page=0&size=5",
+		ResponseEntity<String> response = rt.exchange("/api/product/list?search=아이&page=0&size=3&sort=price,asc",
 			HttpMethod.GET, request, String.class);
 
 		/* then - 검증 */
 		DocumentContext dc = JsonPath.parse(response.getBody());
 		String result = dc.read("$.result");
 
-		String data1 = dc.read("$.data.items[0].name");
-		String data2 = dc.read("$.data.items[1].name");
-		String data3 = dc.read("$.data.items[2].name");
+		String data1 = dc.read("$.data[0].name");
+		String data2 = dc.read("$.data[1].name");
+		String data3 = dc.read("$.data[2].name");
 
 		assertThat(result).isEqualTo("success");
 		assertThat(data1).isEqualTo("아이폰11");
@@ -156,16 +156,16 @@ class ProductControllerTest {
 
 		/* when - 테스트 실행 */
 		HttpEntity<String> request = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = rt.exchange("/api/product/list?search=아이&orderby=pricedesc&page=0&size=5",
+		ResponseEntity<String> response = rt.exchange("/api/product/list?search=아이&page=0&size=3&sort=price,desc",
 			HttpMethod.GET, request, String.class);
 
 		/* then - 검증 */
 		DocumentContext dc = JsonPath.parse(response.getBody());
 		String result = dc.read("$.result");
 
-		String data1 = dc.read("$.data.items[0].name");
-		String data2 = dc.read("$.data.items[1].name");
-		String data3 = dc.read("$.data.items[2].name");
+		String data1 = dc.read("$.data[0].name");
+		String data2 = dc.read("$.data[1].name");
+		String data3 = dc.read("$.data[2].name");
 
 		assertThat(result).isEqualTo("success");
 		assertThat(data1).isEqualTo("아이폰13");
@@ -208,7 +208,7 @@ class ProductControllerTest {
 
 		/* when - 테스트 실행 */
 		HttpEntity<String> request = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = rt.exchange("/api/product/list?search=아이&orderby=popular&page=0&size=5",
+		ResponseEntity<String> response = rt.exchange("/api/product/list?search=아이&page=0&size=3&sort=sales,desc",
 			HttpMethod.GET, request, String.class);
 
 		System.out.println(response);
@@ -216,9 +216,9 @@ class ProductControllerTest {
 		DocumentContext dc = JsonPath.parse(response.getBody());
 		String result = dc.read("$.result");
 
-		String data1 = dc.read("$.data.items[0].name");
-		String data2 = dc.read("$.data.items[1].name");
-		String data3 = dc.read("$.data.items[2].name");
+		String data1 = dc.read("$.data[0].name");
+		String data2 = dc.read("$.data[1].name");
+		String data3 = dc.read("$.data[2].name");
 
 		assertThat(result).isEqualTo("success");
 		assertThat(data1).isEqualTo("아이폰12");
