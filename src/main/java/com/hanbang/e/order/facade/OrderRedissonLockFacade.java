@@ -21,8 +21,8 @@ public class OrderRedissonLockFacade {
     }
 
     public void insertOrder(Long key, Long memberId, Long productId, OrderReq orderReq){
-        String inserKey = String.valueOf(1+key);
-        RLock lock = redissonClient.getLock(inserKey);
+        String insertKey = String.valueOf("insert"+key);
+        RLock lock = redissonClient.getLock(insertKey);
 
         try {
             boolean available = lock.tryLock(10, 1, TimeUnit.SECONDS);
@@ -38,24 +38,6 @@ public class OrderRedissonLockFacade {
         }
     }
 
-    public void deleteOrder(Long key, Long memberId, Long orderId){
-        String deleteKey = String.valueOf(0+key);
-        RLock lock = redissonClient.getLock(deleteKey);
-
-        try {
-            boolean available = lock.tryLock(10, 1, TimeUnit.SECONDS);
-
-            if(!available) {
-                return;
-            }
-            orderService.deleteOrder(memberId, orderId);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } finally {
-            lock.unlock();
-        }
-
-    }
 
 }
 
