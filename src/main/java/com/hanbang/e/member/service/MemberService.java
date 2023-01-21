@@ -1,5 +1,6 @@
 package com.hanbang.e.member.service;
 
+import com.hanbang.e.common.annotation.distributeLock.DistributeLock;
 import com.hanbang.e.common.jwt.JwtUtil;
 import com.hanbang.e.member.dto.MemberCreateReq;
 import com.hanbang.e.member.dto.MemberLoginReq;
@@ -23,7 +24,7 @@ public class MemberService {
 
     private final JwtUtil jwtUtil;
 
-    @Transactional
+    @DistributeLock(key = "#Member")
     public void signup(MemberCreateReq memberCreateReq) {
         memberRepository.findByEmail(memberCreateReq.getEmail())
                 .ifPresent(m -> {
