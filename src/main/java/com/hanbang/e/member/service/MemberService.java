@@ -24,8 +24,7 @@ public class MemberService {
 
     private final JwtUtil jwtUtil;
 
-//    @DistributeLock(key = "#member")
-    @Transactional
+    @DistributeLock(key = "#Member")
     public void signup(MemberCreateReq memberCreateReq) {
         memberRepository.findByEmail(memberCreateReq.getEmail())
                 .ifPresent(m -> {

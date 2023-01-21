@@ -28,7 +28,7 @@ public class OrderService {
 	private final MemberRepository memberRepository;
 	private final ProductRepository productRepository;
 
-	@DistributeLock(key = "#order")
+	@DistributeLock(key = "#Order")
 	public void insertOrder(Long memberId, Long productId, OrderReq orderReq) {
 
 		Member member = memberRepository.findById(memberId)
@@ -65,7 +65,7 @@ public class OrderService {
 
 		List<Orders> orderList = orderRepository.findOrdersByMemberOrderByCreatedAtDesc(member);
 
-		List<OrderResp> orderRespList = new ArrayList<OrderResp>();
+		List<OrderResp> orderRespList = new ArrayList<>();
 
 		if (orderList.size() != 0) {
 			for (Orders order : orderList) {
@@ -77,7 +77,7 @@ public class OrderService {
 		return orderRespList;
 	}
 
-	@DistributeLock(key = "#order")
+	@DistributeLock(key = "#Order")
 	public void deleteOrder(Long memberId, Long orderId) {
 
 		Orders orders = orderRepository.findById(orderId)

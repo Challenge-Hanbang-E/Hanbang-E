@@ -51,7 +51,7 @@ OrderController {
 	}
 
 	@DeleteMapping("")
-	public ResponseEntity<?> deleteOrder(@RequestParam Long orderId, HttpServletRequest request) {
+	public ResponseEntity<ResponseDto<?>> deleteOrder(@RequestParam Long orderId, HttpServletRequest request) {
 		Long memberId = jwtUtil.getMemberIdFromToken(request);
 		orderService.deleteOrder(memberId, orderId);
 		return new ResponseEntity<>(new ResponseDto("success", "주문 삭제 성공", null), HttpStatus.OK);
