@@ -35,6 +35,6 @@ jobs:
           port: 22
           script: |
             docker rm -f $(docker ps -qa)
-            docker-compose pull && docker-compose up -d
-            docker-compose up -d
+            docker-compose pull
+            docker-compose up -d --remove-orphans
             docker image prune -f
