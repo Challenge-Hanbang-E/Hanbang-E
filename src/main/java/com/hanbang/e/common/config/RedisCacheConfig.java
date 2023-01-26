@@ -36,7 +36,7 @@ public class RedisCacheConfig {
         RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())) // Value Serializer 변경
                 .disableCachingNullValues()
-                .entryTtl(Duration.ofMinutes(5)); // 캐시 수명 30분
+                .entryTtl(Duration.ofMinutes(5)); // 캐시 수명 5분
         builder.cacheDefaults(configuration);
         return builder.build();
     }
