@@ -3,6 +3,7 @@ package com.hanbang.e.product.controller;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +38,13 @@ public class ProductController {
 	@GetMapping("/list")
 	public ResponseEntity<?> searchProduct(@RequestParam("search") String search, Pageable pageable) {
 		List<ProductSimpleResp> response = productService.searchProduct(search, pageable);
+
+		return new ResponseEntity<>(new ResponseDto<>("success", "검색 성공", response), HttpStatus.OK);
+	}
+
+	@GetMapping("/list/no-offset")
+	public ResponseEntity<?> searchProductCursor(@RequestParam("search") String search, @RequestParam("cursorId") Long cursorId, Pageable pageable) {
+		Slice<ProductSimpleResp> response = productService.searchProductCursor(search, cursorId, pageable);
 
 		return new ResponseEntity<>(new ResponseDto<>("success", "검색 성공", response), HttpStatus.OK);
 	}
