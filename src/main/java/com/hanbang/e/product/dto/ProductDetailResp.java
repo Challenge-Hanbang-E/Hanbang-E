@@ -4,11 +4,12 @@ import com.hanbang.e.product.entity.Product;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class ProductDetailResp {
 	private Long productId;
-	private String brand;
 	private String name;
 	private Long price;
 	private String productimg;
