@@ -12,8 +12,8 @@ services:
       - default
       - hanbange_network
 
-  redis_container:
-    container_name: redis_boot
+  redis:
+    container_name: redis
     image: redis:latest
     ports:
       - 6379:6379
