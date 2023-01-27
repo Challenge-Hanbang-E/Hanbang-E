@@ -8,6 +8,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 
 import com.hanbang.e.product.dto.ProductSimpleResp;
@@ -26,7 +28,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 	}
 
 	@Override
-	public List<ProductSimpleResp> searchPageFilter(String keyword, Pageable pageable) {
+	public Slice<ProductSimpleResp> searchPageFilter(String keyword, Pageable pageable) {
 
 		List<ProductSimpleResp> results = queryFactory
 			.select(Projections.constructor(ProductSimpleResp.class,
@@ -37,11 +39,11 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 			.from(product)
 			.where(keywordEq(keyword))
 			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
+			.limit(pageable.getPageSize() + 1)
 			.orderBy(productSort(pageable))
 			.fetch();
 
-		return results;
+		return checkLastPage(pageable, results);
 	}
 
 	private OrderSpecifier<?> productSort(Pageable pageable) {
@@ -65,6 +67,17 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
 	private BooleanExpression keywordEq(String keyword) {
 		return isEmpty(keyword) ? null : product.productName.contains(keyword);
+	}
+
+	private Slice<ProductSimpleResp> checkLastPage(Pageable pageable, List<ProductSimpleResp> results) {
+		boolean hasNext = false;
+
+		if (results.size() > pageable.getPageSize()) {
+			hasNext = true;
+			results.remove(pageable.getPageSize());
+		}
+
+		return new SliceImpl<>(results, pageable, hasNext);
 	}
 
 }

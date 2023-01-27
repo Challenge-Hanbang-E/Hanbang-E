@@ -2,9 +2,8 @@ package com.hanbang.e.product.service;
 
 import static com.hanbang.e.common.exception.ExceptionMessage.*;
 
-import java.util.List;
-
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +28,7 @@ public class ProductService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<ProductSimpleResp> searchProduct(String keyword, Pageable pageable){
+	public Slice<ProductSimpleResp> searchProduct(String keyword, Pageable pageable){
 		return productRepository.searchPageFilter(keyword, pageable);
 	}
 
