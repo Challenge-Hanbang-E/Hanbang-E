@@ -42,3 +42,6 @@ src/main/resources/application-config.properties
 
 ### MySQL ###
 src/main/resources/application-dev.properties
+
+### redis ###
+src/main/resources/application-redis.properties
