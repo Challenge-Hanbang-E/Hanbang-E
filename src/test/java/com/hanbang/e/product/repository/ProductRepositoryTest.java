@@ -2,8 +2,6 @@ package com.hanbang.e.product.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -81,12 +80,12 @@ class ProductRepositoryTest {
 		Pageable pageable = PageRequest.of(0, 5, property);
 
 		/* when - 테스트 실행 */
-		List<ProductSimpleResp> productList = productRepository.searchPageFilter(search, pageable);
+		Slice<ProductSimpleResp> productList = productRepository.searchPageFilter(search, pageable);
 
 		/* then - 검증 */
-		assertThat(productList.get(0).getPrice()).isEqualTo(1500000L);
-		assertThat(productList.get(1).getPrice()).isEqualTo(1200000L);
-		assertThat(productList.get(2).getPrice()).isEqualTo(1000000L);
+		assertThat(productList.getContent().get(0).getPrice()).isEqualTo(1500000L);
+		assertThat(productList.getContent().get(1).getPrice()).isEqualTo(1200000L);
+		assertThat(productList.getContent().get(2).getPrice()).isEqualTo(1000000L);
 
 	}
 
@@ -100,12 +99,12 @@ class ProductRepositoryTest {
 		Pageable pageable = PageRequest.of(0, 5, property);
 
 		/* when - 테스트 실행 */
-		List<ProductSimpleResp> productList = productRepository.searchPageFilter(search, pageable);
+		Slice<ProductSimpleResp> productList = productRepository.searchPageFilter(search, pageable);
 
 		/* then - 검증 */
-		assertThat(productList.get(0).getPrice()).isEqualTo(500000L);
-		assertThat(productList.get(1).getPrice()).isEqualTo(1000000L);
-		assertThat(productList.get(2).getPrice()).isEqualTo(1200000L);
+		assertThat(productList.getContent().get(0).getPrice()).isEqualTo(500000L);
+		assertThat(productList.getContent().get(1).getPrice()).isEqualTo(1000000L);
+		assertThat(productList.getContent().get(2).getPrice()).isEqualTo(1200000L);
 
 	}
 
@@ -119,18 +118,18 @@ class ProductRepositoryTest {
 		Pageable pageable = PageRequest.of(0, 5, property);
 
 		/* when - 테스트 실행 */
-		List<ProductSimpleResp> productList = productRepository.searchPageFilter(search, pageable);
+		Slice<ProductSimpleResp> productList = productRepository.searchPageFilter(search, pageable);
 
 		/* then - 검증 */
-		assertThat(productList.get(0).getName()).isEqualTo("아이폰12");
-		assertThat(productList.get(1).getName()).isEqualTo("아이폰14");
-		assertThat(productList.get(2).getName()).isEqualTo("아이폰13");
+		assertThat(productList.getContent().get(0).getName()).isEqualTo("아이폰12");
+		assertThat(productList.getContent().get(1).getName()).isEqualTo("아이폰14");
+		assertThat(productList.getContent().get(2).getName()).isEqualTo("아이폰13");
 
 	}
 
-	@DisplayName("검색결과 판매량순 조회 페이징 작동 확인")
+	@DisplayName("다음 데이터가 있는경우의 반환값 Slice 확인")
 	@Test
-	public void OrderByBestSellingPagingTest() {
+	public void returnHasNextDataSliceTest() {
 
 		/* given - 데이터 준비 */
 		String search = "아이";
@@ -138,12 +137,33 @@ class ProductRepositoryTest {
 		Pageable pageable = PageRequest.of(0, 2, property);
 
 		/* when - 테스트 실행 */
-		List<ProductSimpleResp> productList = productRepository.searchPageFilter(search, pageable);
+		Slice<ProductSimpleResp> productList = productRepository.searchPageFilter(search, pageable);
 
-		/* then - 검증 */
-		assertThat(productList.size()).isEqualTo(2);
-		assertThat(productList.get(0).getName()).isEqualTo("아이폰12");
-		assertThat(productList.get(1).getName()).isEqualTo("아이폰14");
+		// /* then - 검증 */
+		assertThat(productList.getContent().size()).isEqualTo(2);
+		assertThat(productList.isLast()).isEqualTo(false);
+		assertThat(productList.getContent().get(0).getName()).isEqualTo("아이폰12");
+		assertThat(productList.getContent().get(1).getName()).isEqualTo("아이폰14");
+
+	}
+
+	@DisplayName("다음 데이터 없는경우의 반환값 Slice 확인")
+	@Test
+	public void returnHasNotNextDataSliceTest() {
+
+		/* given - 데이터 준비 */
+		String search = "아이";
+		Sort property = Sort.by(Sort.Direction.DESC, "sales");
+		Pageable pageable = PageRequest.of(0, 4, property);
+
+		/* when - 테스트 실행 */
+		Slice<ProductSimpleResp> productList = productRepository.searchPageFilter(search, pageable);
+
+		// /* then - 검증 */
+		assertThat(productList.getContent().size()).isEqualTo(4);
+		assertThat(productList.isLast()).isEqualTo(true);
+		assertThat(productList.getContent().get(0).getName()).isEqualTo("아이폰12");
+		assertThat(productList.getContent().get(1).getName()).isEqualTo("아이폰14");
 
 	}
 }
