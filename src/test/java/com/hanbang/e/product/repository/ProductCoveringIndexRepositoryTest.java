@@ -76,7 +76,8 @@ class ProductCoveringIndexRepositoryTest {
 		Sort property = Sort.by(Sort.Direction.DESC, "price");
 		Pageable pageable = PageRequest.of(0, 5, property);
 
-		List<ProductSimpleResp> productList = productRepository.findPagesWithCoveringIndex(search, pageable) ;
+		List<ProductSimpleResp> productList = productRepository.findPagesWithCoveringIndex(search, pageable)
+			.getContent();
 
 		assertThat(productList.size()).isEqualTo(0);
 	}
@@ -91,7 +92,8 @@ class ProductCoveringIndexRepositoryTest {
 		Pageable pageable = PageRequest.of(0, 5, property);
 
 		/* when - 테스트 실행 */
-		List<ProductSimpleResp> productList = productRepository.findPagesWithCoveringIndex(search, pageable) ;
+		List<ProductSimpleResp> productList = productRepository.findPagesWithCoveringIndex(search, pageable)
+			.getContent();
 
 		/* then - 검증 */
 		assertThat(productList.get(0).getPrice()).isEqualTo(1500000L);
@@ -110,7 +112,8 @@ class ProductCoveringIndexRepositoryTest {
 		Pageable pageable = PageRequest.of(0, 5, property);
 
 		/* when - 테스트 실행 */
-		List<ProductSimpleResp> productList = productRepository.findPagesWithCoveringIndex(search, pageable);
+		List<ProductSimpleResp> productList = productRepository.findPagesWithCoveringIndex(search, pageable)
+			.getContent();
 
 		/* then - 검증 */
 		assertThat(productList.get(0).getPrice()).isEqualTo(500000L);
@@ -128,7 +131,8 @@ class ProductCoveringIndexRepositoryTest {
 		Pageable pageable = PageRequest.of(0, 5, property);
 
 		/* when - 테스트 실행 */
-		List<ProductSimpleResp> productList = productRepository.findPagesWithCoveringIndex(search, pageable);
+		List<ProductSimpleResp> productList = productRepository.findPagesWithCoveringIndex(search, pageable)
+			.getContent();
 
 		/* then - 검증 */
 		assertThat(productList.get(0).getName()).isEqualTo("아이폰12");
@@ -146,7 +150,8 @@ class ProductCoveringIndexRepositoryTest {
 		Pageable pageable = PageRequest.of(0, 2, property);
 
 		/* when - 테스트 실행 */
-		List<ProductSimpleResp> productList = productRepository.findPagesWithCoveringIndex(search, pageable);
+		List<ProductSimpleResp> productList = productRepository.findPagesWithCoveringIndex(search, pageable)
+			.getContent();
 
 		/* then - 검증 */
 		assertThat(productList.size()).isEqualTo(2);
