@@ -6,9 +6,14 @@ services:
     image: yanjuicy/hanbange:latest
     ports:
       - "80:8080"
+    depends_on:
+      - redis
+    networks:
+      - default
+      - hanbange_network
 
-  redis_container:
-    container_name: redis_boot
+  redis:
+    container_name: redis
     image: redis:latest
     ports:
       - 6379:6379
@@ -17,3 +22,10 @@ services:
       - "mode=standalone"
     restart: always
     command: redis-server
+    networks:
+      - default
+      - hanbange_network
+
+networks:
+  hanbange_network:
+    driver: bridge
