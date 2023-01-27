@@ -4,6 +4,8 @@ import static com.hanbang.e.common.exception.ExceptionMessage.*;
 
 import java.util.List;
 
+import com.hanbang.e.product.dto.ProductDetailResp;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,11 +23,13 @@ public class ProductService {
 	private final ProductRepository productRepository;
 
 	@Transactional(readOnly = true)
-	public Product getProductDetails(Long productId) {
+	@Cacheable(value = "ProductDetailResp", key = "#productId", cacheManager = "redisCacheManager")
+	public ProductDetailResp getProductDetails(Long productId) {
 		Product selectedProduct = productRepository.findById(productId)
 			.orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_PRODUCT_MSG.getMsg()));
 
-		return selectedProduct;
+		ProductDetailResp details = ProductDetailResp.from(selectedProduct);
+		return details;
 	}
 
 	@Transactional(readOnly = true)

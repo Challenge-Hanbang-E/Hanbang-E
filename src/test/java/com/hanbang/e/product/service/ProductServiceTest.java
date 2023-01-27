@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.hanbang.e.product.dto.ProductDetailResp;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -199,9 +201,9 @@ class ProductServiceTest {
 		when(productRepository.findById(id)).thenReturn(productOP);
 
 		/* when - 테스트 실행 */
-		Product result = productService.getProductDetails(id);
+		ProductDetailResp result = productService.getProductDetails(id);
 
 		/* then - 검증 */
-		assertThat(result.getProductName()).isEqualTo("아이폰11");
+		assertThat(result.getName()).isEqualTo("아이폰11");
 	}
 }
