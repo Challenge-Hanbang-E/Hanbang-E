@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hanbang.e.common.dto.PageResponseDto;
 import com.hanbang.e.common.dto.ResponseDto;
 import com.hanbang.e.product.dto.ProductDetailResp;
 import com.hanbang.e.product.dto.ProductSimpleResp;
@@ -46,6 +47,6 @@ public class ProductController {
 	@GetMapping("/list/ci")
 	public ResponseEntity<?> productCoveringIndexList(@RequestParam("search") String search, Pageable pageable) {
 		Slice<ProductSimpleResp> response = productService.searchProductWithCoveringIndex(search, pageable);
-		return new ResponseEntity<>(new ResponseDto<>("success", "검색 성공", response), HttpStatus.OK);
+		return new ResponseEntity<>(new PageResponseDto<>("success", "검색 성공", response.getContent(), response.hasNext()), HttpStatus.OK);
 	}
 }
