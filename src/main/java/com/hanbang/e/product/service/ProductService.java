@@ -7,11 +7,13 @@ import java.util.List;
 import com.hanbang.e.product.dto.ProductDetailResp;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hanbang.e.product.dto.ProductSimpleResp;
 import com.hanbang.e.product.entity.Product;
+import com.hanbang.e.product.repository.ProductCoveringIndexRepository;
 import com.hanbang.e.product.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductService {
 
 	private final ProductRepository productRepository;
+	private final ProductCoveringIndexRepository productCoveringIndexRepository;
 
 	@Transactional(readOnly = true)
 	@Cacheable(value = "ProductDetailResp", key = "#productId", cacheManager = "redisCacheManager")
@@ -35,6 +38,11 @@ public class ProductService {
 	@Transactional(readOnly = true)
 	public List<ProductSimpleResp> searchProduct(String keyword, Pageable pageable){
 		return productRepository.searchPageFilter(keyword, pageable);
+	}
+
+	@Transactional(readOnly = true)
+	public Slice<ProductSimpleResp> searchProductWithCoveringIndex(String keyword, Pageable pageable) {
+		return productCoveringIndexRepository.findPagesWithCoveringIndex(keyword, pageable);
 	}
 
 }
