@@ -28,7 +28,7 @@ public class OrderService {
 	private final MemberRepository memberRepository;
 	private final ProductRepository productRepository;
 
-	@DistributeLock(key = "#Order")
+	@DistributeLock(key = "#productId", name = "productId")
 	public void insertOrder(Long memberId, Long productId, OrderReq orderReq) {
 
 		Member member = memberRepository.findById(memberId)
@@ -77,7 +77,7 @@ public class OrderService {
 		return orderRespList;
 	}
 
-	@DistributeLock(key = "#Order")
+	@Transactional
 	public void deleteOrder(Long memberId, Long orderId) {
 
 		Orders orders = orderRepository.findById(orderId)
@@ -87,10 +87,13 @@ public class OrderService {
 			throw new IllegalArgumentException(NOT_HAVE_PERMISSION_DELETE_MSG.getMsg());
 		}
 
-		Product cancledProduct = orders.getProduct();
-		cancledProduct.orderCancel(orders.getQuantity());
-		
+		orderCancel(orders.getProduct().getProductId(), orders.getQuantity());
 		orderRepository.deleteById(orderId);
 	}
 
+	@DistributeLock(key = "#productId", name = "productId")
+	private void orderCancel(Long productId, int quantity) {
+		Product product = productRepository.findById(productId).get();
+		product.orderCancel(quantity);
+	}
 }

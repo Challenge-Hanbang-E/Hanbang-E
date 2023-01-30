@@ -26,6 +26,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -50,7 +54,6 @@ public class MemberControllerTest {
 
     @BeforeEach
     public void setup() {
-
         Member member = new Member("이메일","비밀번호","주소");
         memberRepository.save(member);
     }
@@ -78,6 +81,59 @@ public class MemberControllerTest {
         /* then - 검증 */
         assertThat(result).isEqualTo("success");
         assertThat(msg).isEqualTo("회원가입 완료");
+    }
+
+    @Test
+    @DisplayName("중복된 이메일 가입 테스트")
+    public void duplicateEmailSignupTest() throws JsonProcessingException, InterruptedException {
+
+        /* given - 데이터 준비 */
+
+        // 중복된 회원 정보 생성
+        Member member = memberRepository.findAll().get(0);
+        MemberCreateReq memberCreateReq = new MemberCreateReq(member.getEmail(), member.getPassword(), member.getAddress());
+
+        String body = om.writeValueAsString(memberCreateReq);
+        HttpEntity<String> request = new HttpEntity<>(body, headers);
+
+
+        /* when - 테스트 실행 */
+        ResponseEntity<String> response = rt.exchange("/api/member/signup", HttpMethod.POST, request, String.class);
+        DocumentContext dc = JsonPath.parse(response.getBody());
+        String result = dc.read("$.result");
+
+        /* then - 검증 */
+        assertThat(result).isEqualTo("fail");
+    }
+
+    @Test
+    @DisplayName("동시에 같은 이메일로 회원가입을 시도할 경우")
+    public void signupWithSameEmailTest() throws JsonProcessingException, InterruptedException {
+
+        /* given - 데이터 준비 */
+        MemberCreateReq memberCreateReq = new MemberCreateReq("hanghae@naver.com", "Hanghae11!@", "제주");
+        String body = om.writeValueAsString(memberCreateReq);
+        HttpEntity<String> request = new HttpEntity<>(body, headers);
+
+        /* when - 테스트 실행 */
+        int threadCount = 100;
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        for (int i = 0; i < threadCount; i++) {
+            executorService.submit(() -> {
+                try {
+                    rt.exchange("/api/member/signup", HttpMethod.POST, request, String.class);
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+        latch.await();
+
+        /* then - 검증 */
+        Long resultCount = memberRepository.count();
+        assertThat(resultCount).isEqualTo(2L);
     }
 
     @Test

@@ -2,9 +2,7 @@ package com.hanbang.e.order.controller;
 
 import static org.assertj.core.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -27,6 +25,8 @@ import com.hanbang.e.product.repository.ProductRepository;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 
+import javax.servlet.http.HttpServletRequest;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class OrderControllerTest {
 
@@ -48,37 +48,46 @@ class OrderControllerTest {
 	private static ObjectMapper om;
 	private static HttpHeaders headers;
 
-	@BeforeAll
-	public static void init() {
+	@BeforeEach
+	public void init() {
 		om = new ObjectMapper();
 		headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
+	}
+
+	@AfterEach
+	void delete() {
+		orderRepository.deleteAll();
+		productRepository.deleteAll();
+		memberRepository.deleteAll();
 	}
 
 	@DisplayName("상품 주문")
 	@Test
 	void doOrderTest() throws JsonProcessingException {
 		/* given - 데이터 준비 */
+		Member member = new Member("tj087@naver.com", "1234", "제주시");
+		Product product = Product.builder()
+				.productName("아이폰11")
+				.price(500000L)
+				.img("http....")
+				.stock(10)
+				.sales(50)
+				.onSale(true)
+				.build();
+		memberRepository.save(member);
+		productRepository.save(product);
 
-		Member dummyMember = new Member("tj087@naver.com", "1234", "제주시");
-		Product product1 = Product.builder()
-			.productName("아이폰11")
-			.price(500000L)
-			.img("http....")
-			.stock(10)
-			.sales(50)
-			.onSale(true)
-			.build();
-		memberRepository.save(dummyMember);
-		headers.add("Authorization", jwtUtil.createToken(dummyMember.getMemberId()));
-		productRepository.save(product1);
+		String token = jwtUtil.createToken(member.getMemberId());
 
+		headers.add("Authorization", token);
 		OrderReq order = new OrderReq(1);
 		String body = om.writeValueAsString(order);
 
 		/* when - 테스트 실행 */
 		HttpEntity<String> request = new HttpEntity<>(body, headers);
-		ResponseEntity<String> response = rt.exchange("/api/order?productId="+product1.getProductId(), HttpMethod.POST, request, String.class);
+
+		ResponseEntity<String> response = rt.exchange("/api/order?productId="+product.getProductId(), HttpMethod.POST, request, String.class);
 
 		/* then - 검증 */
 		DocumentContext dc = JsonPath.parse(response.getBody());
@@ -103,8 +112,9 @@ class OrderControllerTest {
 		Product product3 = new Product("제로콜라세트", 12000L, "http://제로콜라세트.jpg", 50, 50, true);
 		productRepository.save(product3);
 
-		Member member = new Member("mina@naver.com", "12345", "제주도");
+		Member member = new Member("tj087@naver.com", "1234", "제주시");
 		memberRepository.save(member);
+
 		headers.add("Authorization", jwtUtil.createToken(member.getMemberId()));
 
 		Orders order1 = Orders.builder()
@@ -168,29 +178,31 @@ class OrderControllerTest {
 	@Test
 	public void deleteOrderTest() throws JsonProcessingException {
 		/* given - 데이터 준비 */
-		Member dummyMember = new Member("tj087@naver.com", "1234", "제주시");
-		Product product1 = Product.builder()
-			.productName("아이폰11")
-			.price(500000L)
-			.img("http....")
-			.stock(10)
-			.sales(50)
-			.onSale(true)
-			.build();
-		memberRepository.save(dummyMember);
-		headers.add("Authorization", jwtUtil.createToken(dummyMember.getMemberId()));
-		productRepository.save(product1);
-		Orders dummyOrder = Orders.builder()
-			.destination(dummyMember.getAddress())
+		Member member = new Member("tj087@naver.com", "1234", "제주시");
+		Product product = Product.builder()
+				.productName("아이폰11")
+				.price(500000L)
+				.img("http....")
+				.stock(10)
+				.sales(50)
+				.onSale(true)
+				.build();
+		memberRepository.save(member);
+		productRepository.save(product);
+
+		headers.add("Authorization", jwtUtil.createToken(member.getMemberId()));
+		Orders newOrder = Orders.builder()
+			.destination(member.getAddress())
 			.quantity(1)
-			.productPrice(product1.getPrice())
-			.member(dummyMember)
+			.productPrice(product.getPrice())
+			.member(member)
+			.product(product)
 			.build();
-		orderRepository.save(dummyOrder);
+		orderRepository.save(newOrder);
 
 		/* when - 테스트 실행 */
 		HttpEntity<String> request = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = rt.exchange("/api/order?orderId=1", HttpMethod.DELETE, request, String.class);
+		ResponseEntity<String> response = rt.exchange("/api/order?orderId=" + newOrder.getOrderId(), HttpMethod.DELETE, request, String.class);
 
 		/* then - 검증 */
 		DocumentContext dc = JsonPath.parse(response.getBody());

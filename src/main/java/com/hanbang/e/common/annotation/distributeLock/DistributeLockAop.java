@@ -34,7 +34,7 @@ public class DistributeLockAop {
         DistributeLock distributeLock = method.getAnnotation(DistributeLock.class);
 
         // @DistributeLock에 전달한 key를 가져오기 위해 SpringEL 표현식을 파싱
-        String key = REDISSON_KEY_PREFIX + CustomSpringELParser.getDynamicValue(signature.getParameterNames(), joinPoint.getArgs(), distributeLock.key());
+        String key = REDISSON_KEY_PREFIX + distributeLock.name() + "_" +CustomSpringELParser.getDynamicValue(signature.getParameterNames(), joinPoint.getArgs(), distributeLock.key());
 
         // Redisson에 해당 락의 RLock 인터페이스를 가져옴
         RLock rLock = redissonClient.getLock(key);
@@ -52,10 +52,11 @@ public class DistributeLockAop {
             return aopForTransaction.proceed(joinPoint);
         } catch (Exception e) {
             Thread.currentThread().interrupt();
-            throw new InterruptedException();
+            throw new InterruptedException(e.getMessage());
         } finally {
             // 종료 혹은 예외 발생시 finally에서 Lock을 해제
             rLock.unlock();
+            log.info("release lock success {}" , key);
         }
     }
 }

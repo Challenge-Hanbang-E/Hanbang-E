@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,6 +22,14 @@ public class GlobalExceptionHandler {
 	public ResponseEntity IllegalArgumentExceptionHandler(Exception e) {
 		logger.error("", e);
 		ResponseDto response = new ResponseDto("fail", e.getMessage(), null);
+
+		return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(value = DataIntegrityViolationException.class)
+	public ResponseEntity DataIntegrityViolationExceptionHandler(Exception e) {
+		logger.error("", e);
+		ResponseDto response = new ResponseDto("fail", "시스템 오류, 다시 시도해주세요", null);
 
 		return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 	}
