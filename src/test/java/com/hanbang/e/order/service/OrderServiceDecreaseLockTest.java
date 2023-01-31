@@ -87,12 +87,10 @@ public class OrderServiceDecreaseLockTest {
     @DisplayName("주문취소 동시에 100개의요청")
     public void deleteOrderAtSameTime() throws InterruptedException {
         /* 상품 정보 생성 */
-        Product product = new Product("맥북프로", 1000000L, "img", 0, 100, true);
-        productRepository.saveAndFlush(product);
+        Product product = productRepository.findAll().get(0);
 
         /* 회원 정보 생성 */
-        Member member = new Member("yj0718@gmail.com", "dPwls12!", "address");
-        memberRepository.saveAndFlush(member);
+        Member member = memberRepository.findAll().get(0);
 
         /* 주문 정보 생성 */
         for (int i = 0; i < 100; i++) {
@@ -118,7 +116,8 @@ public class OrderServiceDecreaseLockTest {
         }
         latch.await();
 
-        Long resultOrders = orderRepository.count();
-        assertThat(resultOrders).isEqualTo(orderRepository.count());
+        assertThat(orderRepository.count()).isEqualTo(0);
+        assertThat(product.getStock()).isEqualTo(100);
+        assertThat(product.getSales()).isEqualTo(0);
     }
 }

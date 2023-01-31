@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 public @interface DistributeLock {
     String key(); // 락의 이름
 
+    String name();
     TimeUnit timeUnit() default TimeUnit.SECONDS; // 시간 단위 설정(초)
 
     long waitTime() default 5L; // 락을 획득하기 위한 대기 시간
