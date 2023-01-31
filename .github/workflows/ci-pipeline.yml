@@ -61,6 +61,8 @@ jobs:
       # 도커 환경 init
       - name: Env Set Using Docker
         run: docker-compose -f docker-compose.redis.yml up -d
+      - name: Run ElasticSearch
+        run: docker run -d -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.10.1
 
       # gradle 캐싱
       - name: Gradle Caching
