@@ -45,3 +45,6 @@ src/main/resources/application-dev.properties
 
 ### redis ###
 src/main/resources/application-redis.properties
+
+### elasticsearch ###
+src/main/resources/application-elasticsearch.properties
