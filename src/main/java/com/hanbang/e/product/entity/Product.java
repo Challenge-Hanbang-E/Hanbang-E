@@ -56,4 +56,9 @@ public class Product {
 		this.stock += quantity;
 		this.sales -= quantity;
 	}
+
+	public void restock() {
+		this.stock = 1000000;
+	}
+
 }

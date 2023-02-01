@@ -46,6 +46,8 @@ dependencies {
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}"
     annotationProcessor "javax.annotation:javax.annotation-api"
     annotationProcessor "javax.persistence:javax.persistence-api"
+
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
 }
 
 tasks.named('test') {
