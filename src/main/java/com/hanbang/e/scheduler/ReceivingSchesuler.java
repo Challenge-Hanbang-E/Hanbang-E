@@ -25,7 +25,7 @@ public class ReceivingSchesuler {
 	private final Job ReceivingJob;
 	private final JobLauncher jobLauncher;
 
-	@Scheduled(cron = "0 0 0 0/1 * *")
+	@Scheduled(cron = "0 0 0 * * *")
 	public void ReceivingJobRun() throws
 		JobInstanceAlreadyCompleteException,
 		JobExecutionAlreadyRunningException,
