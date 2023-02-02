@@ -2,8 +2,6 @@ package com.hanbang.e.product.service;
 
 import static com.hanbang.e.common.exception.ExceptionMessage.*;
 
-import java.util.List;
-
 import com.hanbang.e.product.dto.ProductDetailResp;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hanbang.e.product.dto.ProductSimpleResp;
 import com.hanbang.e.product.entity.Product;
 import com.hanbang.e.product.repository.ProductCoveringIndexRepository;
+import com.hanbang.e.product.repository.ProductIndexRepository;
 import com.hanbang.e.product.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +23,7 @@ public class ProductService {
 
 	private final ProductRepository productRepository;
 	private final ProductCoveringIndexRepository productCoveringIndexRepository;
+	private final ProductIndexRepository productIndexRepository;
 
 	@Transactional(readOnly = true)
 	@Cacheable(value = "ProductDetailResp", key = "#productId", cacheManager = "redisCacheManager")
@@ -36,8 +36,8 @@ public class ProductService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<ProductSimpleResp> searchProduct(String keyword, Pageable pageable){
-		return productRepository.searchPageFilter(keyword, pageable);
+	public Slice<ProductSimpleResp> searchProductWithIndex(String keyword, Pageable pageable) {
+		return productIndexRepository.findPagesWithIndex(keyword, pageable);
 	}
 
 	@Transactional(readOnly = true)
