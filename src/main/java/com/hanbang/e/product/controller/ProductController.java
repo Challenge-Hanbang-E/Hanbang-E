@@ -44,4 +44,11 @@ public class ProductController {
 		Slice<ProductSimpleResp> response = productService.searchProductWithCoveringIndex(search, pageable);
 		return new ResponseEntity<>(new PageResponseDto<>("success", "검색 성공", response.getContent(), response.hasNext()), HttpStatus.OK);
 	}
+
+	@GetMapping("/list/ft")
+	public ResponseEntity<?> searchProductWithFullText(@RequestParam("search") String search, Pageable pageable) {
+		Slice<ProductSimpleResp> response = productService.searchProductWithFullText(search, pageable);
+
+		return new ResponseEntity<>(new PageResponseDto<>("success", "검색 성공", response.getContent(), response.hasNext()), HttpStatus.OK);
+	}
 }

@@ -1,6 +1,6 @@
 package com.hanbang.e.product.dto;
 
-import com.hanbang.e.product.entity.Product;
+import com.hanbang.e.product.entity.ProductFullTextIndex;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +21,7 @@ public class ProductSimpleResp {
 		this.img = img;
 	}
 
-	public static ProductSimpleResp from(Product product) {
+	public static ProductSimpleResp from(ProductFullTextIndex product) {
 		return ProductSimpleResp.builder()
 			.productId(product.getProductId())
 			.name(product.getProductName())
