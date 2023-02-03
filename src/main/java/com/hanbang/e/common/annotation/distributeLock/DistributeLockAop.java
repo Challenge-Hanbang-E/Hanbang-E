@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 
+import static com.hanbang.e.common.exception.ExceptionMessage.ORDER_FAIL_MSG;
+
 /*
 - @DistributeLock 을 선언한 메소드를 호출했을때 실행되는 aop클래스
  */
@@ -43,7 +45,8 @@ public class DistributeLockAop {
             // Redisson의 tryLock method를 이용해 Lock 획득을 시도 (획득 실패시 Lock이 해제 될 때까지 subscribe)
             boolean available = rLock.tryLock(distributeLock.waitTime(), distributeLock.leaseTime(), distributeLock.timeUnit());
             if (!available) {
-                return false;
+                // 락 획득 실패 시의 예외처리.
+                throw new IllegalArgumentException(ORDER_FAIL_MSG.getMsg());
             }
 
             log.info("get lock success {}" , key);
