@@ -50,9 +50,19 @@ jobs:
           OCCUPY_SECRET2_DIR_FILE_NAME: application-redis.properties
         run: echo $OCCUPY_SECRET2 | base64 --decode > $OCCUPY_SECRET2_DIR/$OCCUPY_SECRET2_DIR_FILE_NAME
 
+      # elasticsearch 정보 로딩
+      - name: Copy Secret3
+        env:
+         OCCUPY_SECRET3: ${{ secrets.OCCUPY_SECRET3 }}
+         OCCUPY_SECRET3_DIR: src/main/resources
+         OCCUPY_SECRET3_DIR_FILE_NAME: application-elasticsearch.properties
+        run: echo $OCCUPY_SECRET3 | base64 --decode > $OCCUPY_SECRET3_DIR/$OCCUPY_SECRET3_DIR_FILE_NAME
+
       # 도커 환경 init
       - name: Env Set Using Docker
         run: docker-compose -f docker-compose.redis.yml up -d
+      - name: Run ElasticSearch
+        run: docker run -d -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.10.1
 
       # gradle 캐싱
       - name: Gradle Caching
