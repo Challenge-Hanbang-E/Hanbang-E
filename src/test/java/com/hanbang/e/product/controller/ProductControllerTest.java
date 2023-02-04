@@ -18,6 +18,8 @@ import org.springframework.test.context.TestExecutionListeners;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hanbang.e.common.env.AcceptanceTestExecutionListener;
 import com.hanbang.e.product.entity.Product;
+import com.hanbang.e.product.entity.ProductIndex;
+import com.hanbang.e.product.repository.ProductIndexRepository;
 import com.hanbang.e.product.repository.ProductRepository;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -31,6 +33,9 @@ class ProductControllerTest {
 
 	@Autowired
 	private ProductRepository productRepository;
+
+	@Autowired
+	private ProductIndexRepository productIndexRepository;
 
 	private static ObjectMapper om;
 	private static HttpHeaders headers;
@@ -73,7 +78,7 @@ class ProductControllerTest {
 	@Test
 	public void searchProductOrderByLowToHighTest() {
 		/* given - 데이터 준비 */
-		Product product1 = Product.builder()
+		ProductIndex product1 = ProductIndex.builder()
 			.productName("아이폰11")
 			.price(500000L)
 			.img("http....")
@@ -81,7 +86,7 @@ class ProductControllerTest {
 			.sales(50)
 			.onSale(true)
 			.build();
-		Product product2 = Product.builder()
+		ProductIndex product2 = ProductIndex.builder()
 			.productName("아이폰12")
 			.price(1000000L)
 			.img("http....")
@@ -89,7 +94,7 @@ class ProductControllerTest {
 			.sales(100)
 			.onSale(true)
 			.build();
-		Product product3 = Product.builder()
+		ProductIndex product3 = ProductIndex.builder()
 			.productName("아이폰13")
 			.price(1200000L)
 			.img("http....")
@@ -98,9 +103,9 @@ class ProductControllerTest {
 			.onSale(true)
 			.build();
 
-		productRepository.save(product1);
-		productRepository.save(product2);
-		productRepository.save(product3);
+		productIndexRepository.save(product1);
+		productIndexRepository.save(product2);
+		productIndexRepository.save(product3);
 
 		/* when - 테스트 실행 */
 		HttpEntity<String> request = new HttpEntity<>(null, headers);
@@ -115,17 +120,20 @@ class ProductControllerTest {
 		String data2 = dc.read("$.data[1].name");
 		String data3 = dc.read("$.data[2].name");
 
+		Boolean nextPage = dc.read("$.hasNextPage");
+
 		assertThat(result).isEqualTo("success");
 		assertThat(data1).isEqualTo("아이폰11");
 		assertThat(data2).isEqualTo("아이폰12");
 		assertThat(data3).isEqualTo("아이폰13");
+		assertThat(nextPage).isEqualTo(false);
 	}
 
 	@DisplayName("상품 검색하기, 높은 가격순 조회")
 	@Test
 	public void searchProductOrderByHighToLowTest() {
 		/* given - 데이터 준비 */
-		Product product1 = Product.builder()
+		ProductIndex product1 = ProductIndex.builder()
 			.productName("아이폰11")
 			.price(500000L)
 			.img("http....")
@@ -133,7 +141,7 @@ class ProductControllerTest {
 			.sales(50)
 			.onSale(true)
 			.build();
-		Product product2 = Product.builder()
+		ProductIndex product2 = ProductIndex.builder()
 			.productName("아이폰12")
 			.price(1000000L)
 			.img("http....")
@@ -141,7 +149,7 @@ class ProductControllerTest {
 			.sales(100)
 			.onSale(true)
 			.build();
-		Product product3 = Product.builder()
+		ProductIndex product3 = ProductIndex.builder()
 			.productName("아이폰13")
 			.price(1200000L)
 			.img("http....")
@@ -150,9 +158,9 @@ class ProductControllerTest {
 			.onSale(true)
 			.build();
 
-		productRepository.save(product1);
-		productRepository.save(product2);
-		productRepository.save(product3);
+		productIndexRepository.save(product1);
+		productIndexRepository.save(product2);
+		productIndexRepository.save(product3);
 
 		/* when - 테스트 실행 */
 		HttpEntity<String> request = new HttpEntity<>(null, headers);
@@ -167,17 +175,20 @@ class ProductControllerTest {
 		String data2 = dc.read("$.data[1].name");
 		String data3 = dc.read("$.data[2].name");
 
+		Boolean nextPage = dc.read("$.hasNextPage");
+
 		assertThat(result).isEqualTo("success");
 		assertThat(data1).isEqualTo("아이폰13");
 		assertThat(data2).isEqualTo("아이폰12");
 		assertThat(data3).isEqualTo("아이폰11");
+		assertThat(nextPage).isEqualTo(false);
 	}
 
 	@DisplayName("상품 검색하기, 판매량순 조회")
 	@Test
 	public void searchProductOrderByBestSellingTest() {
 		/* given - 데이터 준비 */
-		Product product1 = Product.builder()
+		ProductIndex product1 = ProductIndex.builder()
 			.productName("아이폰11")
 			.price(500000L)
 			.img("http....")
@@ -185,7 +196,7 @@ class ProductControllerTest {
 			.sales(50)
 			.onSale(true)
 			.build();
-		Product product2 = Product.builder()
+		ProductIndex product2 = ProductIndex.builder()
 			.productName("아이폰12")
 			.price(1000000L)
 			.img("http....")
@@ -193,7 +204,7 @@ class ProductControllerTest {
 			.sales(100)
 			.onSale(true)
 			.build();
-		Product product3 = Product.builder()
+		ProductIndex product3 = ProductIndex.builder()
 			.productName("아이폰13")
 			.price(1200000L)
 			.img("http....")
@@ -202,9 +213,9 @@ class ProductControllerTest {
 			.onSale(true)
 			.build();
 
-		productRepository.save(product1);
-		productRepository.save(product2);
-		productRepository.save(product3);
+		productIndexRepository.save(product1);
+		productIndexRepository.save(product2);
+		productIndexRepository.save(product3);
 
 		/* when - 테스트 실행 */
 		HttpEntity<String> request = new HttpEntity<>(null, headers);
@@ -220,9 +231,12 @@ class ProductControllerTest {
 		String data2 = dc.read("$.data[1].name");
 		String data3 = dc.read("$.data[2].name");
 
+		Boolean nextPage = dc.read("$.hasNextPage");
+
 		assertThat(result).isEqualTo("success");
 		assertThat(data1).isEqualTo("아이폰12");
 		assertThat(data2).isEqualTo("아이폰13");
 		assertThat(data3).isEqualTo("아이폰11");
+		assertThat(nextPage).isEqualTo(false);
 	}
 }
