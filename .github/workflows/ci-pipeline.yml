@@ -1,11 +1,4 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
-
-name: Java CI with Gradle And Docker Image Deploy
+name: Java CI with Gradle
 
 on:
   pull_request:
@@ -50,9 +43,19 @@ jobs:
           OCCUPY_SECRET2_DIR_FILE_NAME: application-redis.properties
         run: echo $OCCUPY_SECRET2 | base64 --decode > $OCCUPY_SECRET2_DIR/$OCCUPY_SECRET2_DIR_FILE_NAME
 
+      # elasticsearch 정보 로딩
+      - name: Copy Secret3
+        env:
+         OCCUPY_SECRET3: ${{ secrets.OCCUPY_SECRET3 }}
+         OCCUPY_SECRET3_DIR: src/main/resources
+         OCCUPY_SECRET3_DIR_FILE_NAME: application-elasticsearch.properties
+        run: echo $OCCUPY_SECRET3 | base64 --decode > $OCCUPY_SECRET3_DIR/$OCCUPY_SECRET3_DIR_FILE_NAME
+
       # 도커 환경 init
       - name: Env Set Using Docker
         run: docker-compose -f docker-compose.redis.yml up -d
+      - name: Run ElasticSearch
+        run: docker run -d -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.10.1
 
       # gradle 캐싱
       - name: Gradle Caching
@@ -74,36 +77,3 @@ jobs:
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
           arguments: build
-
-      # 임시 저장
-      - name: Temporarily save build artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: build-artifact
-          path: build
-          retention-days: 1
-
-  build-docker-image:
-    needs: build
-    name: Deploy Docker Image
-    runs-on: ubuntu-latest
-    steps:
-      # 임시 저장 결과 로딩
-      - uses: actions/checkout@v2
-      - name: Retrieve built
-        uses: actions/download-artifact@v2
-        with:
-          name: build-artifact
-          path: build
-
-      # 도커 허브 로그인
-      - name: Docker Hub Sign-in
-        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
-
-      # 도커 이미지 빌드
-      - name: Building Docker Image
-        run: docker build --build-arg JAR_FILE=build/libs/\*.jar -t ${{ secrets.DOCKERHUB_USERNAME }}/hanbange .
-
-      # 도커 이미지 푸시
-      - name: Publish Docker Image
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME  }}/hanbange

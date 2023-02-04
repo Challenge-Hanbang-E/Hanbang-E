@@ -13,9 +13,6 @@ public class ProductDetailResp {
 	private String name;
 	private Long price;
 	private String productimg;
-	private int stock;
-	private int sales;
-	private Boolean onSale;
 
 	@Builder
 	public ProductDetailResp(Long productId, String name, Long price, String productimg, int stock,
@@ -25,9 +22,6 @@ public class ProductDetailResp {
 		this.name = name;
 		this.price = price;
 		this.productimg = productimg;
-		this.stock = stock;
-		this.sales = sales;
-		this.onSale = onSale;
 	}
 
 	public static ProductDetailResp from(Product product) {
@@ -36,8 +30,6 @@ public class ProductDetailResp {
 			.name(product.getProductName())
 			.price(product.getPrice())
 			.productimg(product.getImg())
-			.stock(product.getStock())
-			.onSale(product.getOnSale())
 			.build();
 	}
 }
