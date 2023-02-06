@@ -1,6 +1,7 @@
 package com.hanbang.e.productes.controller;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hanbang.e.common.dto.PageResponseDto;
+import com.hanbang.e.product.dto.ProductSimpleResp;
 import com.hanbang.e.productes.entity.ProductDoc;
 import com.hanbang.e.productes.service.ProductDocService;
 
@@ -29,8 +31,12 @@ public class ProductDocController {
 	public ResponseEntity<?> productList(@RequestParam("search") String keyword, Pageable pageable) {
 		checkPageableParam(pageable);
 		Page<ProductDoc> response = productDocService.searchProductDoc(keyword, pageable);
+		List<ProductSimpleResp> data = response.getContent().stream()
+			.map(ProductSimpleResp::from)
+			.toList();
+
 		return new ResponseEntity<>(
-			new PageResponseDto<>("success", "검색 성공", response.getContent(), response.hasNext()), HttpStatus.OK);
+			new PageResponseDto<>("success", "검색 성공", data, response.hasNext()), HttpStatus.OK);
 	}
 
 	private void checkPageableParam(Pageable pageable) {
