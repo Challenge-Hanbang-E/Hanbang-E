@@ -42,6 +42,11 @@ public class ProductService {
 	}
 
 	@Transactional(readOnly = true)
+	public Slice<ProductSimpleResp> searchProductWithNoIndex(String keyword, Pageable pageable) {
+		return productRepository.findPagesWithNoIndex(keyword, pageable);
+	}
+
+	@Transactional(readOnly = true)
 	public Slice<ProductSimpleResp> searchProductWithIndex(String keyword, Pageable pageable) {
 		return productIndexRepository.findPagesWithIndex(keyword, pageable);
 	}

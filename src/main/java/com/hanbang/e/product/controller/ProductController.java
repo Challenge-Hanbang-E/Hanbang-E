@@ -32,6 +32,13 @@ public class ProductController {
 		return new ResponseEntity<>(new ResponseDto<>("success", "상세 조회 성공", details), HttpStatus.OK);
 	}
 
+	@GetMapping("/list/no-index")
+	public ResponseEntity<?> searchProductNoIndex(@RequestParam("search") String search, Pageable pageable) {
+		Slice<ProductSimpleResp> response = productService.searchProductWithNoIndex(search, pageable);
+
+		return new ResponseEntity<>(new PageResponseDto<>("success", "검색 성공", response.getContent(), response.hasNext()), HttpStatus.OK);
+	}
+
 	@GetMapping("/list")
 	public ResponseEntity<?> searchProduct(@RequestParam("search") String search, Pageable pageable) {
 		Slice<ProductSimpleResp> response = productService.searchProductWithIndex(search, pageable);
