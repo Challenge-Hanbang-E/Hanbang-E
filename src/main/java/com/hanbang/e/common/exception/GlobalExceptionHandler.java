@@ -1,5 +1,8 @@
 package com.hanbang.e.common.exception;
 
+import javax.persistence.LockTimeoutException;
+import javax.persistence.PersistenceException;
+import javax.persistence.PessimisticLockException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -28,6 +31,30 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(value = DataIntegrityViolationException.class)
 	public ResponseEntity DataIntegrityViolationExceptionHandler(Exception e) {
+		logger.error("", e);
+		ResponseDto response = new ResponseDto("fail", "시스템 오류, 다시 시도해주세요", null);
+
+		return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(value = PessimisticLockException.class)
+	public ResponseEntity PessimisticLockExceptionHandler(Exception e) {
+		logger.error("", e);
+		ResponseDto response = new ResponseDto("fail", "락 획득 실패", null);
+
+		return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(value = LockTimeoutException.class)
+	public ResponseEntity LockTimeoutExceptionHandler(Exception e) {
+		logger.error("", e);
+		ResponseDto response = new ResponseDto("fail", "wait time이 초과", null);
+
+		return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(value = PersistenceException.class)
+	public ResponseEntity PersistenceExceptionHandler(Exception e) {
 		logger.error("", e);
 		ResponseDto response = new ResponseDto("fail", "시스템 오류, 다시 시도해주세요", null);
 

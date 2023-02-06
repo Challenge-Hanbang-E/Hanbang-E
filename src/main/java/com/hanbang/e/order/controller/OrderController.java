@@ -42,6 +42,14 @@ OrderController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
+	@PostMapping("/pessimistic")
+	public ResponseEntity<ResponseDto<?>> doOrderWithPessimisticLock(@RequestParam Long productId, @Valid @RequestBody OrderReq orderReq, HttpServletRequest request) {
+		Long memberId = jwtUtil.getMemberIdFromToken(request);
+		orderService.insertOrderWithPessimisticLock(memberId, productId, orderReq);
+		ResponseDto<?> response = new ResponseDto<>("success", "주문 성공", null);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
 	@GetMapping("/list")
 	public ResponseEntity<ResponseDto<List<OrderResp>>> getMyOrderList(HttpServletRequest request) {
 		Long memberId = jwtUtil.getMemberIdFromToken(request);
