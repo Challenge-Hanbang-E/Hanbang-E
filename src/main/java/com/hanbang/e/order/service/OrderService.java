@@ -57,6 +57,34 @@ public class OrderService {
 		orderRepository.save(order);
 	}
 
+	@Transactional
+	public void insertOrderWithPessimisticLock(Long memberId, Long productId, OrderReq orderReq) {
+
+		Member member = memberRepository.findById(memberId)
+				.orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_MEMBER_MSG.getMsg()));
+
+		Product product = productRepository.findByIdWithPessimisticLock(productId);
+
+		if (!product.getOnSale()) {
+			throw new IllegalArgumentException(NOT_SELL_PRODUCT_MSG.getMsg());
+		}
+
+		if (product.getStock() == 0) {
+			throw new IllegalArgumentException(PRODUCT_OUTOF_STOCK_MSG.getMsg());
+		}
+
+		int orderQuantity = orderReq.getQuantity();
+
+		if (product.getStock() - orderQuantity < 0) {
+			throw new IllegalArgumentException(String.format(BE_IN_STOCK_CHECK_MSG.getMsg(), product.getStock()));
+		}
+
+		product.sell(orderQuantity);
+
+		Orders order = orderReq.toEntity(member, product, orderQuantity);
+		orderRepository.save(order);
+	}
+
 	@Transactional(readOnly = true)
 	public List<OrderResp> findMyOrderList(Long memberId) {
 
