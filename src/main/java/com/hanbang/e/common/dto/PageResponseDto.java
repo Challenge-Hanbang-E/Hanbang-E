@@ -8,12 +8,12 @@ public class PageResponseDto<T> {
 	private final String msg;
 	private final T data;
 
-	private final boolean hasNestPage;
+	private final boolean hasNextPage;
 
-	public PageResponseDto(String result, String msg, T data, boolean hasNestPage){
+	public PageResponseDto(String result, String msg, T data, boolean hasNextPage){
 		this.result = result;
 		this.msg = msg;
 		this.data = data;
-		this.hasNestPage = hasNestPage;
+		this.hasNextPage = hasNextPage;
 	}
 }
